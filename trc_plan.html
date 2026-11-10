@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TRC 醫療系統整合組｜機器人概念 CAD、BOM 與時程</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1c1f26;--mut:#5d6675;--card:#f3f5f8;--line:#d8dde5;--acc:#0b63c5;--ok:#17803d;--warn:#b45309;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14171c;--fg:#e8ebf0;--mut:#9aa4b2;--card:#1d222a;--line:#323a46;--acc:#6aa9ff;--ok:#4ade80;--warn:#fbbf24}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14171c;--fg:#e8ebf0;--mut:#9aa4b2;--card:#1d222a;--line:#323a46;--acc:#6aa9ff;--ok:#4ade80;--warn:#fbbf24}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 2px}h2{font-size:16px;margin:18px 0 6px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 12px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+section{display:none}section.on{display:block}
+#cv{height:440px;border:1px solid var(--line);border-radius:10px;background:var(--card);touch-action:none;overflow:hidden}
+#cv canvas{display:block;width:100%;height:100%}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--card);white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+.ok{color:var(--ok)}.warn{color:var(--warn)}
+.note{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px;margin:10px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>醫療照護應用組・系統整合驗證組：機器人概念設計</h1>
+<p class="sub">依 TRC 2026 醫療組手冊與簡章整理。本頁為概念級（envelope）CAD，非可直接加工的製造圖；價格依據見 BOM 表，標「估算」者需向廠商報價。</p>
+<nav id="tabs"><button data-t="a" class="on">3D 概念模型</button><button data-t="b">BOM 成本</button><button data-t="c">開發時程</button><button data-t="d">走線與電源</button><button data-t="e">底盤（火星車參考）</button><button data-t="f">開源資源</button><button data-t="g">團隊 14 人</button></nav>
+
+<section id="a" class="on">
+<div id="cv"></div>
+<div class="row" id="poses"></div>
+<div class="row"><button id="env" class="on">顯示規格包絡 65×80×175 cm</button><span class="sub" id="hint">拖曳旋轉、滾輪縮放</span></div>
+<h2>規格檢核（概念值）</h2>
+<div class="scroll"><table><thead><tr><th>項目</th><th>規定</th><th>本設計</th><th>狀態</th></tr></thead><tbody>
+<tr><td>寬</td><td>≤ 65 cm（建議）</td><td>60 cm</td><td class="ok">符合</td></tr>
+<tr><td>深</td><td>≤ 80 cm（建議）</td><td>75 cm</td><td class="ok">符合</td></tr>
+<tr><td>高（收納姿態）</td><td>≤ 175 cm（建議）；伸展 ≤ 200 cm</td><td>約 158 cm</td><td class="ok">符合</td></tr>
+<tr><td>重量</td><td>&lt; 120 kg；同分時越輕越好</td><td>估約 105–110 kg（底盤重量為假設）</td><td class="warn">餘裕小，須盡早實秤</td></tr>
+<tr><td>最高速度</td><td>≤ 1.5 m/s</td><td>AMR50-BASE 標稱 1 m/s</td><td class="ok">符合</td></tr>
+<tr><td>緊急停止</td><td>實體按鈕、切斷動力</td><td>後柱紅色蘑菇頭＋安全繼電器</td><td class="ok">設計中</td></tr>
+</tbody></table></div>
+<div class="note">配置邏輯：6 軸協作手臂（TM5-900，臂展約 0.9 m）裝在 85 cm 高的立柱上，涵蓋藥車抽屜（約 85–110 cm）、床旁櫃（82 cm）與器具桌（96–135 cm）；手臂控制箱放在底盤後方壓低重心；前側立柱放螢幕（語音／螢幕回報）與頂部深度相機（看生命徵象監視器與點滴）。</div>
+</section>
+
+<section id="b">
+<div class="scroll"><table id="bom"><thead><tr><th>類別</th><th>品項</th><th class="n">數量</th><th class="n">單價 NT$</th><th class="n">小計 NT$</th><th>價格依據</th><th>信心</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+<div class="note">匯率以 1 USD = 32 NT$ 粗估。TM5-900 採達明借用方案（數量有限、先報名先得、運費自付）；若借不到須另購，價格需向達明詢價。LiDAR 與相機價格為美國零售價，台灣代理價與交期需另詢。</div>
+</section>
+
+<section id="c">
+<div class="scroll"><table><thead><tr><th>期間</th><th>工作</th><th>主要風險</th></tr></thead><tbody id="tl"></tbody></table></div>
+<h2>人力估算（人週，估算）</h2>
+<p class="sub">底盤電源與急停 4｜導航避障 6｜藥車抽屜＋條碼取藥 8｜床旁櫃放置 3｜跨樓層按鈕 3｜病房五情境視覺 10｜手術器具 20 選 4（辨識＋取放＋擺放）12｜任務決策與螢幕判讀 5｜整合與連跑 10。合計約 61 人週；8 人 18 週的總容量約 144 人週（兼職 50% 約 72），可行但無太多緩衝。</p>
+</section>
+
+<section id="d">
+<div class="scroll"><table><thead><tr><th>線路</th><th>來源 → 目的</th><th>備註</th></tr></thead><tbody id="wr"></tbody></table></div>
+</section>
+
+<section id="e">
+<div class="note">參考對象：NASA／JPL 火星車（Sojourner、MER、Curiosity 一脈）與 JPL Open Source Rover。MER 的前置機械臂（IDD）臂展約 0.75 m、約 4 kg，與本案「前置手臂＋桅桿感測」的架構相同；但本案手臂約 22.6 kg，等級完全不同。</div>
+<div class="scroll"><table><thead><tr><th>火星車特徵</th><th>本案評估</th><th>建議</th></tr></thead><tbody>
+<tr><td>搖臂轉向架（rocker-bogie）被動懸吊，六輪常保著地</td><td>賽場是平整室內，收益小；寬度限 65 cm，六輪佔空間</td><td>不採用；先向主辦確認場地有無門檻或坡道</td></tr>
+<tr><td>六輪驅動、四角獨立轉向</td><td>里程計誤差較大，不利於對準藥車與床旁櫃</td><td>需要側移就選麥克納姆輪或現成舵輪底盤，不自製</td></tr>
+<tr><td>桅桿感測頭（高位相機）</td><td>適用：看監視器、點滴、床位</td><td>採用：前側立柱＋D455</td></tr>
+<tr><td>前置機械臂</td><td>概念相同</td><td>採用：TM5-900 裝於立柱</td></tr>
+<tr><td>低位危害相機、自主避障</td><td>適用</td><td>前後 LiDAR＋Nav2；低位相機選配</td></tr>
+</tbody></table></div>
+<h2>底盤兩案</h2>
+<div class="scroll"><table><thead><tr><th>方案</th><th>內容</th><th>整合時間（估算）</th><th>風險</th></tr></thead><tbody>
+<tr><td>A 買 ADATA AMR50-BASE（建議）</td><td>載重 50 kg、1 m/s 的空機平台</td><td>1–2 週</td><td>尺寸、重量、介面未知，須先拿規格書</td></tr>
+<tr><td>B 自製差速底盤，參考 JPL OSR 的機構概念</td><td>OSR 為 Apache-2.0、OSHWA 認證，有 Onshape 模型與 ROS 程式；但它是縮小版教育車，載重未必撐得住約 100 kg 的整機</td><td>6–8 週</td><td>馬達驅動、電源、急停全要自己做，軟體團隊風險高</td></tr>
+</tbody></table></div>
+<p class="sub">翻覆粗估：手臂伸出約 0.45 m 會使重心前移約 0.1 m，仍在 60×75 cm 支撐面內；實際重心高度與急停減速度需在整機後實測。</p>
+</section>
+
+<section id="f">
+<div class="scroll"><table><thead><tr><th>用途</th><th>專案</th><th>注意</th></tr></thead><tbody>
+<tr><td>中介軟體</td><td>ROS 2 Humble、ros2_control</td><td>TM 官方驅動支援 Humble；須確認 MIC-733 的 JetPack 版本能配合</td></tr>
+<tr><td>導航、避障、對接</td><td>Nav2、slam_toolbox 或 RTAB-Map</td><td>主辦會提供場地 URDF，實地賽前一週開放建圖</td></tr>
+<tr><td>手臂驅動</td><td>TechmanRobotInc/tmr_ros2（TMflow 1，TM5 系列）、tm2_ros2（TMflow 2，S 系列，實驗性）</td><td>依借到的型號選用：TM5-900 用 tmr_ros2，TM5S／TM7S 用 tm2_ros2</td></tr>
+<tr><td>手臂規劃</td><td>MoveIt 2</td><td>有使用者回報 TM 驅動與 MoveIt 2 主線版的相容問題，先鎖版本</td></tr>
+<tr><td>相機、LiDAR</td><td>realsense-ros、Hokuyo urg_node2</td><td>確認各 repo 對你們 ROS 版本的支援</td></tr>
+<tr><td>ArUco、條碼、顏色</td><td>OpenCV（ArUco）、ZXing-C++</td><td>藥盒為一維條碼；病人服為綠色判定</td></tr>
+<tr><td>物件偵測</td><td>Ultralytics YOLO（AGPL-3.0）或 torchvision 偵測模型（BSD）</td><td>AGPL 對閉源有義務，商用前先釐清授權</td></tr>
+<tr><td>跌倒、離床</td><td>MediaPipe Pose</td><td>病人為假人時姿態模型不一定有效，需實測</td></tr>
+<tr><td>讀心跳數字</td><td>Tesseract、EasyOCR、docTR</td><td>監視器為 5 吋 320×240，小數字建議用範本比對或自訓數字分類</td></tr>
+<tr><td>任務流程</td><td>BehaviorTree.CPP、py_trees</td><td>三關、維修與重啟都要寫成可恢復狀態</td></tr>
+<tr><td>Orin 加速</td><td>NVIDIA Isaac ROS、Isaac Sim</td><td>研華贊助方案列有相關資源；Isaac Sim 免費但不是開源</td></tr>
+<tr><td>火星車硬體參考</td><td>nasa-jpl/open-source-rover（Apache-2.0）、Sawppy Rover</td><td>僅作機構概念參考</td></tr>
+</tbody></table></div>
+<div class="note">授權與維護狀態我只逐一核對了 TM 驅動與 JPL OSR，其餘依一般資訊整理，使用前請看各 repo 的 LICENSE。簡章禁用受限供應鏈的「軟體系統」，來自中國公司的開源模型（例如 PaddleOCR）是否算受限，請先問主辦，預設避開。</div>
+</section>
+
+<section id="g">
+<p class="sub">依簡章，企業與大學可組「產學聯隊」，須以企業為報名主體並在報名資料載明技術分工；學研單位不能單獨報系統整合組。以下為建議分工，姓名請自行填入。</p>
+<div class="scroll"><table><thead><tr><th>編號</th><th>單位</th><th>角色</th><th>負責</th></tr></thead><tbody>
+<tr><td>E1</td><td>企業</td><td>專案經理、報名窗口</td><td>報名、供應鏈切結、採購、對外聯絡、進度</td></tr>
+<tr><td>E2</td><td>企業</td><td>系統架構</td><td>任務流程、三關串接、螢幕任務判讀</td></tr>
+<tr><td>E3</td><td>企業</td><td>導航</td><td>Nav2、定位、藥車與床旁櫃對接</td></tr>
+<tr><td>E4</td><td>企業</td><td>底盤與嵌入式</td><td>底盤介面、Orin 系統、電源與急停接線</td></tr>
+<tr><td>E5</td><td>企業</td><td>手臂 A</td><td>TM 驅動、MoveIt、第 1 關抽屜與藥盒</td></tr>
+<tr><td>E6</td><td>企業</td><td>手臂 B</td><td>第 3 關器具夾取與擺放、夾爪指尖</td></tr>
+<tr><td>E7</td><td>企業</td><td>視覺</td><td>第 2 關五情境、心跳 OCR、點滴量</td></tr>
+<tr><td>E8</td><td>企業</td><td>測試與模擬</td><td>Gazebo、整合測試、連跑紀錄、影片</td></tr>
+<tr><td>U1</td><td>大學</td><td>機構設計</td><td>立柱、底座、重量與重心、圖面</td></tr>
+<tr><td>U2</td><td>大學</td><td>機構製作與道具</td><td>藥車、床旁櫃、器具桌模擬</td></tr>
+<tr><td>U3</td><td>大學</td><td>電機與線束</td><td>電池、逆變器、安全繼電器、配線</td></tr>
+<tr><td>U4</td><td>大學</td><td>資料集</td><td>20 種器具與病房情境的拍攝、標註</td></tr>
+<tr><td>U5</td><td>大學</td><td>模型訓練</td><td>器具位姿、數字辨識、點滴量模型</td></tr>
+<tr><td>U6</td><td>大學</td><td>人機介面與文件</td><td>螢幕與語音回報、30 頁初審文件</td></tr>
+</tbody></table></div>
+<div class="note">需先談定的事：智慧財產權歸屬（簡章要求作品為自行研發或合法授權）、大學成員是否也要簽參賽切結書與個資同意書、大學成員能否加入企業的 Claude Team 工作區。這三點請向主辦與 Anthropic 確認。</div>
+</section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var tabs=document.querySelectorAll('#tabs button');
+tabs.forEach(function(b){b.onclick=function(){tabs.forEach(function(x){x.classList.toggle('on',x===b)});document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===b.dataset.t)});if(b.dataset.t==='a')resize()}});
+
+/* BOM */
+var rows=[
+['手臂','Techman TM5-900（AC 版，含控制箱與內建相機）',1,0,'達明借用方案；控制箱約 13.5 kg','借用'],
+['底盤','ADATA AMR50-BASE 空機平台（載重 50 kg，1 m/s）',1,300000,'價格未公開，暫估','待報價'],
+['運算','Advantech MIC-733-AO5A1（Jetson AGX Orin 32G）',1,170000,'CDW 約 US$5,288；MIC-732D 約 11 週交期','查價'],
+['感測','Hokuyo UST-10LX 2D LiDAR（日本製，前後各一）',2,53000,'US$1,670（Acroname）；部分通路交期長','查價'],
+['感測','RealSense D455（產地 TH；勿買 D455f，產地 CN）',2,20000,'MSRP 約 US$419，通路價較高','查價'],
+['末端','Robotiq 2F-85 夾爪（加拿大）＋客製指尖／抽屜鉤',1,186000,'US$5,825','查價'],
+['人機','10 吋螢幕＋USB 喇叭／麥克風',1,8000,'估算','估算'],
+['機構','鋁擠立柱、底座、蓋板、3D 列印件、五金',1,55000,'估算','估算'],
+['電源','24V LiFePO4 30Ah 電池',1,25000,'估算','估算'],
+['電源','1 kW 純正弦逆變器（TM5 借用機為 AC 版）',1,12000,'估算','估算'],
+['安全','E-stop 蘑菇頭＋安全繼電器',1,10000,'估算','估算'],
+['電氣','線材、保險絲、DC-DC、連接器',1,10000,'估算','估算'],
+['網路','工業乙太網路交換器',1,5000,'估算','估算']];
+var tb=document.querySelector('#bom tbody'),sum=0,f=function(n){return n.toLocaleString('en-US')};
+rows.forEach(function(r){var s=r[2]*r[3];sum+=s;var tr=document.createElement('tr');tr.innerHTML='<td>'+r[0]+'</td><td>'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+f(r[3])+'</td><td class="n">'+f(s)+'</td><td>'+r[4]+'</td><td>'+r[5]+'</td>';tb.appendChild(tr)});
+var cont=Math.round(sum*0.15),prop=60000,ws=80000,cl=108000;
+var tf=document.querySelector('#bom tfoot');
+[['機器人本體小計',sum],['預備金 15%',cont],['機器人本體合計',sum+cont],['測試道具（藥車、床旁櫃、器具、按鈕面板模擬）',prop],['訓練用 GPU 工作站（選配）',ws],['Claude Team：4 Premium＋10 Standard 共 14 席，月繳約 4.5 個月（US$3,375）',cl],['全案合計',sum+cont+prop+ws+cl]].forEach(function(x,i){var tr=document.createElement('tr');tr.innerHTML='<td colspan="4"><b>'+x[0]+'</b></td><td class="n"><b>'+f(x[1])+'</b></td><td colspan="2"></td>';tf.appendChild(tr)});
+
+/* Timeline */
+var tl=[['11/10–11/16','報名（延長至 11/16）；聯絡達明、威剛／研華、台達；確認企業資格','報名後才能申請借用，名額先到先得'],
+['11/17–12/7','CAD 定案、下單、到貨；ROS 2 與主辦方提供的場地 URDF 模擬環境','LiDAR、相機、Orin 的交期與缺貨'],
+['12/8–1/4','底盤＋Orin＋LiDAR 整機能跑；準備初審書面（30 頁，需實機照片／影片）','初審時硬體不足以拍出實機'],
+['1/5–2/1','第 1 關與第 3 關 MVP：導航、ArUco、抽屜拉取、器具夾取','夾爪指尖與抽屜鉤需反覆試作'],
+['2/2–2/22','第 2 關視覺（離床、跌落、心跳、點滴、病人服）與跨樓層按鈕','春節假期（約 2 月上旬）影響進度'],
+['2/23–3/8','三關連跑 20 分鐘、重量／E-stop 檢錄、備品','總重逼近 120 kg 上限'],
+['3/9–3/15','賽前場域測試（賽前一週開放）、版本凍結','現場光線與場景與實驗室不同']];
+document.getElementById('tl').innerHTML=tl.map(function(r){return '<tr><td style="white-space:nowrap">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join('');
+
+/* Wiring */
+var wr=[['主電源','24V 電池 → 保險絲 → 安全繼電器 → 底盤驅動／逆變器／DC-DC','E-stop 須以硬體切斷動力，不得僅靠軟體'],
+['手臂電源','逆變器（AC）→ TM5 控制箱 → 手臂','借用機為 AC 版；控制箱的外部安全輸入接 E-stop'],
+['運算電源','24V → DC-DC → MIC-733（Orin）','須確認 MIC-733 的 DC 輸入範圍'],
+['LiDAR','24V → UST-10LX；乙太網路 → 交換器','前後各一，支援 12／24V'],
+['相機','D455 ×2 → USB3 → Orin','建議用主動式 USB3 線並固定線纜'],
+['手臂通訊','交換器 ↔ TM 控制箱（乙太網路）','TMflow 與 ROS 驅動二擇一，早期就定案'],
+['夾爪','TM 控制箱末端 24V／RS-485 → 2F-85','2F-85 供電 24V、約 0.8 A'],
+['人機','Orin → HDMI 螢幕；USB 喇叭','競賽期間不得外部連線，開發網路與比賽網路分開']];
+document.getElementById('wr').innerHTML=wr.map(function(r){return '<tr><td style="white-space:nowrap">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join('');
+
+/* 3D */
+var T=THREE,el=document.getElementById('cv'),scene=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50);
+var rd=new T.WebGLRenderer({antialias:true,alpha:true});el.appendChild(rd.domElement);
+scene.add(new T.AmbientLight(0xffffff,.75));var dl=new T.DirectionalLight(0xffffff,.7);dl.position.set(2,4,3);scene.add(dl);
+scene.add(new T.GridHelper(4,16,0x8a8f99,0xb9bdc6));
+var R=new T.Group();scene.add(R);
+function mat(c,o){return new T.MeshLambertMaterial(o?{color:c,transparent:true,opacity:o}:{color:c})}
+function box(w,h,d,c,x,y,z,p,o){var m=new T.Mesh(new T.BoxGeometry(w,h,d),mat(c,o));m.position.set(x,y,z);(p||R).add(m);return m}
+function cyl(r,h,c,x,y,z,p,rx){var m=new T.Mesh(new T.CylinderGeometry(r,r,h,24),mat(c));m.position.set(x,y,z);if(rx)m.rotation.x=Math.PI/2;(p||R).add(m);return m}
+box(.6,.27,.75,0x56627a,0,.165,0);box(.6,.02,.75,0x2e3542,0,.31,0);
+box(.455,.23,.305,0x8a93a3,0,.425,-.22);
+box(.3,.54,.3,0xaab4c2,0,.58,.08);
+cyl(.035,.03,0xdc2626,0,.75,-.075,R,true).position.z=-.085;
+box(.05,.07,.05,0xf59e0b,0,.345,.33);box(.05,.07,.05,0xf59e0b,0,.345,-.33);
+box(.05,1.24,.05,0x4b5563,-.25,.93,.3);box(.26,.17,.02,0x111827,-.25,1.12,.335);box(.12,.03,.04,0x1f2937,-.25,1.56,.3);
+var sh=new T.Group();sh.position.set(0,.99,.08);R.add(sh);
+cyl(.075,.28,0x3b82f6,0,-.14,0,sh);
+var a2=new T.Group();sh.add(a2);box(.1,.43,.1,0xe5e7eb,0,.215,0,a2);
+var a3=new T.Group();a3.position.y=.43;a2.add(a3);box(.09,.4,.09,0xd1d5db,0,.2,0,a3);
+var a4=new T.Group();a4.position.y=.4;a3.add(a4);box(.08,.1,.08,0x3b82f6,0,.05,0,a4);box(.07,.1,.05,0x1f2937,0,.15,0,a4);box(.012,.08,.03,0x9ca3af,-.03,.22,0,a4);box(.012,.08,.03,0x9ca3af,.03,.22,0,a4);
+var env=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(.65,1.75,.8)),new T.LineBasicMaterial({color:0xf59e0b}));env.position.set(0,.875,0);scene.add(env);
+var poses={'收納':[0,2.9,0],'藥車抽屜':[1.9,-.33,0],'器具桌':[.9,.8,1.44]};
+function tip(p){var c1=p[0],c2=p[0]+p[1],c3=c2+p[2];return{z:.08+.43*Math.sin(c1)+.4*Math.sin(c2)+.26*Math.sin(c3),y:.99+.43*Math.cos(c1)+.4*Math.cos(c2)+.26*Math.cos(c3)}}
+var cart=new T.Group(),tbl=new T.Group();scene.add(cart);scene.add(tbl);
+(function(){var t=tip(poses['藥車抽屜']);box(.65,1.09,.44,0x22c55e,0,.545,t.z+.22,cart,.3);
+var u=tip(poses['器具桌']);box(.7,.03,.5,0x22c55e,0,u.y-.015,u.z,tbl,.4);box(.06,u.y-.03,.06,0x22c55e,0,(u.y-.03)/2,u.z,tbl,.4)})();
+var cur=poses['收納'].slice(),tgt=cur.slice();
+var pb=document.getElementById('poses');
+Object.keys(poses).forEach(function(k,i){var b=document.createElement('button');b.textContent=k;if(i===0)b.className='on';b.onclick=function(){tgt=poses[k].slice();cart.visible=(k==='藥車抽屜');tbl.visible=(k==='器具桌');pb.querySelectorAll('button').forEach(function(x){x.className=x===b?'on':''})};pb.appendChild(b)});
+cart.visible=false;tbl.visible=false;
+document.getElementById('env').onclick=function(){env.visible=!env.visible;this.classList.toggle('on',env.visible)};
+var th=.9,ph=1.2,rad=3.3,drag=null;
+el.addEventListener('pointerdown',function(e){drag=[e.clientX,e.clientY];el.setPointerCapture(e.pointerId)});
+el.addEventListener('pointerup',function(){drag=null});
+el.addEventListener('pointermove',function(e){if(!drag)return;th-=(e.clientX-drag[0])*.008;ph=Math.max(.2,Math.min(1.5,ph-(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]});
+el.addEventListener('wheel',function(e){e.preventDefault();rad=Math.max(1.5,Math.min(7,rad*(e.deltaY>0?1.08:.92)))},{passive:false});
+function resize(){var w=el.clientWidth||600;rd.setSize(w,440,false);cam.aspect=w/440;cam.updateProjectionMatrix()}
+window.addEventListener('resize',resize);resize();
+(function loop(){requestAnimationFrame(loop);for(var i=0;i<3;i++)cur[i]+=(tgt[i]-cur[i])*.08;a2.rotation.x=cur[0];a3.rotation.x=cur[1];a4.rotation.x=cur[2];
+cam.position.set(rad*Math.sin(ph)*Math.sin(th),.8+rad*Math.cos(ph),.3+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(0,.8,.3);rd.render(scene,cam)})();
+})();
+</script>
+</body>
+</html>
