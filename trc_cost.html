@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>rover｜TRC 成本分析表</title>
+<style>
+:root{color-scheme:light;--bg:#eef1f5;--card:#fff;--fg:#142033;--mut:#5c6b7c;--line:#d5dbe3;--brand:#0c3d6e;--g:#0e7a3d;--a:#b45309;--r:#b42318;--gb:#e3f4ea;--ab:#fdf0dc;--rb:#fde8e6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1318;--card:#171c23;--fg:#e8ebf0;--mut:#9aa4b2;--line:#2c3440;--brand:#6aa9ff;--g:#4ade80;--a:#fbbf24;--r:#f87171;--gb:#12301f;--ab:#34290f;--rb:#3a1a18}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1318;--card:#171c23;--fg:#e8ebf0;--mut:#9aa4b2;--line:#2c3440;--brand:#6aa9ff;--g:#4ade80;--a:#fbbf24;--r:#f87171;--gb:#12301f;--ab:#34290f;--rb:#3a1a18}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+header{background:var(--brand);color:#fff;padding:14px 16px}
+header h1{margin:0;font-size:19px}header p{margin:2px 0 0;font-size:12px;opacity:.85}
+.wrap{max-width:1180px;margin:0 auto}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:12px 16px 0;max-width:1180px;margin:0 auto}
+.k{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:8px 10px}
+.k small{color:var(--mut);font-size:11px}.k b{display:block;font-size:19px;line-height:1.25}.k span{font-size:11px;color:var(--mut)}
+.k.g{border-left-color:var(--g);background:var(--gb)}.k.a{border-left-color:var(--a);background:var(--ab)}.k.r{border-left-color:var(--r);background:var(--rb)}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:12px;padding:12px 16px 40px;max-width:1180px;margin:0 auto}
+.panel,.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.panel{align-self:start;position:sticky;top:8px}
+h2{font-size:14px;margin:0 0 8px}.box{margin-bottom:12px}
+.sl{margin:0 0 10px}.sl label{display:flex;justify-content:space-between;font-weight:600;font-size:13px}.sl input{width:100%}.sl small{display:block;color:var(--mut);font-size:11px;min-height:16px}
+button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 9px;cursor:pointer;margin:0 4px 4px 0}
+.alert{padding:6px 10px;border-radius:8px;margin:0 0 6px;font-size:13px}.alert.r{background:var(--rb);color:var(--r)}.alert.a{background:var(--ab);color:var(--a)}.alert.g{background:var(--gb);color:var(--g)}
+.bar{height:20px;display:flex;border-radius:6px;overflow:hidden;background:var(--line)}.bar i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--mut);margin:6px 0}.leg u{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;text-decoration:none}
+.row{display:grid;grid-template-columns:110px 1fr 56px;gap:8px;align-items:center;margin:5px 0;font-size:13px}.track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}.track i{display:block;height:100%}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}th{white-space:nowrap;color:var(--mut)}td.n{text-align:right;white-space:nowrap}
+.gantt{position:relative;margin-top:6px}.gr{position:relative;height:24px;margin:3px 0}.gr span{position:absolute;left:0;font-size:11px;color:var(--mut);top:4px;z-index:2;padding-left:4px}.gb{position:absolute;top:3px;height:18px;border-radius:4px;opacity:.9}.gm{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--mut);z-index:1}.gm em{position:absolute;top:-16px;left:2px;font-size:10px;font-style:normal;color:var(--mut);white-space:nowrap}
+.note{font-size:12px;color:var(--mut)}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.panel{position:static}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>rover｜成本分析表</h1><p>廣達 × 長庚大學　|　2026/11/10　|　拉動左側拉桿即時重算　|　機構見 trc_rover_v1.html，競賽計畫見 trc_plan.html　|　匯率 1 USD = 32 TWD</p></div></header>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+<aside class="panel"><h2>配置拉桿</h2><div id="presets"></div><div id="sliders"></div><p class="note">預設「建議」合計 1,313,875。價格標估算者需報價取代。不向達明、研華或其他廠商借整機、手臂或電腦。</p></aside>
+<main>
+<div class="box"><h2>試算重點</h2><div id="alerts"></div></div>
+<div class="box"><h2>成本結構</h2><div class="bar" id="cbar"></div><div class="leg" id="cleg"></div><div class="scroll"><table><thead><tr><th>類別</th><th>品項</th><th class="n">NT$</th><th>依據</th></tr></thead><tbody id="bom"></tbody></table></div></div>
+<div class="box"><h2>功能判斷（隨拉桿，不是實測）</h2><div id="acc"></div></div>
+<div class="box"><h2>風險</h2><div id="risk"></div></div>
+<div class="box"><h2>時程</h2><div class="gantt" id="gantt"></div><p class="note" id="gnote"></p></div>
+<div class="box"><h2>開源與採購依據</h2><div class="scroll"><table><thead><tr><th>項目</th><th>用途</th><th>授權／來源</th><th>這台 rover 的用法</th></tr></thead><tbody id="oss"></tbody></table></div></div>
+</main></div>
+<script>
+var BASE=[{n:'既有平台改裝',c:80000,src:'只列改裝，不把底盤內部成本整筆入帳'},{n:'廣達四輪全向底盤入帳',c:180000,src:'RA8T2＋BLDC 輪轂。內部成本，輪轂產地待填'}];
+var LIFT=[{n:'較短升降',c:70000,kg:8,src:'第一版，估算'},{n:'升降約 1.0 m',c:90000,kg:10,src:'涵蓋器具桌 1.355 m，估算'}];
+var TELE=[{n:'較短伸縮',c:40000,kg:4,src:'第一版，估算'},{n:'側向伸縮 0.75 m',c:50000,kg:6,src:'抽屜與器具桌遠邊，估算'}];
+var GRIP=[
+{n:'簡化夾爪',c:40000,kg:1,lines:[['腕與夾爪','簡化夾爪',40000,'估算']]},
+{n:'RH-P12 級＋指尖',c:70000,kg:1.5,lines:[['腕與夾爪','夾爪 RH-P12 級＋指尖鉤',70000,'夾爪 5 萬、指尖 2 萬，皆估算']]},
+{n:'建議夾爪＋備用指尖',c:110000,kg:1.5,lines:[['腕與夾爪','夾爪 RH-P12 級＋指尖鉤',70000,'估算'],['腕與夾爪','備用指尖',40000,'奪牌加項']]}];
+var SENS=[
+{n:'1 LiDAR＋1 D455',c:73000,kg:.6,lead:5,lines:[['感測','Hokuyo UST-10LX ×1',53000,'日本'],['感測','RealSense D455 ×1',20000,'不用 D455f']]},
+{n:'2 LiDAR＋D455＋D405',c:138000,kg:1,lead:6,lines:[['感測','Hokuyo UST-10LX ×2',106000,'US$1,670×32×2'],['感測','RealSense D455',20000,'不用 D455f'],['感測','RealSense D405 級',12000,'採購時核產地']]},
+{n:'建議感測＋備用 D455',c:158000,kg:1,lead:6,lines:null}];
+SENS[2].lines=SENS[1].lines.concat([['感測','備用 D455',20000,'奪牌加項']]);
+var POWER=[
+{n:'精簡人機與安全',c:58000,src:'人機 1 萬、DC-DC 1.5 萬、Pilz 2.5 萬、Moxa 0.8 萬',lines:[['人機','面板、喇叭、麥克風',10000],['電源安全','DC-DC 與線束',15000],['電源安全','Pilz 與急停',25000],['電源安全','Moxa',8000]]},
+{n:'建議人機與安全',c:79500,src:'面板 8,000、喇叭 3,000、麥克風 3,500、DC-DC 18,000、Pilz 35,000、Moxa 12,000',lines:[['人機','10.1 吋面板',8000],['人機','喇叭與功放',3000],['人機','USB 麥克風，不用 ReSpeaker',3500],['電源安全','DC-DC、保險絲、線束',18000],['電源安全','Pilz 安全繼電器＋急停',35000],['電源安全','Moxa EDS-2005-EL',12000]]},
+{n:'建議安全＋第二急停與備用電池',c:129500,src:'建議方案再加第二急停站 2 萬、備用電池 3 萬',lines:null}];
+POWER[2].lines=POWER[1].lines.concat([['電源安全','第二急停站',20000],['電源安全','備用電池 20Ah',30000]]);
+var FAB=[{n:'結構與道具從簡',c:80000,src:'各 4 萬',lines:[['製作','結構',40000],['製作','道具',40000]]},{n:'結構 6 萬＋道具 6 萬',c:120000,src:'長庚製作，估算',lines:[['製作','鋁擠、蓋板、立柱',60000],['製作','藥車、床旁櫃、器具桌、按鈕、假人',60000]]},{n:'建議製作＋追加',c:190000,src:'再加加工 3 萬、道具 4 萬',lines:null}];
+FAB[2].lines=FAB[1].lines.concat([['製作','追加加工',30000],['製作','道具加做',40000]]);
+var TEST=[{n:'基本儀器',c:15000,src:'估算',lines:[['測試','磅秤、功率計、治具',15000]]},{n:'建議儀器',c:25000,src:'估算',lines:[['測試','磅秤、功率計、標定治具',25000]]},{n:'建議儀器＋GPU 工作站',c:105000,src:'工作站 8 萬，不上車',lines:[['測試','測試儀器',25000],['測試','GPU 工作站',80000]]}];
+var TRAVEL=[{n:'差旅從簡',c:90000,src:'含保險',lines:[['差旅','差旅與運輸保險',90000]]},{n:'高雄差旅＋保險',c:145000,src:'12 萬＋2.5 萬',lines:[['差旅','高雄差旅',120000],['差旅','運輸保險',25000]]},{n:'建議差旅＋追加',c:185000,src:'再加 4 萬',lines:[['差旅','高雄差旅',120000],['差旅','運輸保險',25000],['差旅','差旅追加',40000]]}];
+var CLAUDE=[{n:'4 席規劃值',c:60000,src:'保守方案'},{n:'14 席，約 4.5 個月',c:108000,src:'4 Premium＋10 Standard，US$3,375×32'},{n:'14 席＋API',c:148000,src:'再加 API 40,000'}];
+var TECH=[{n:'不增加',c:0,p:0,src:'沒有專職組裝人手'},{n:'內部支援 1 名',c:0,p:.19,src:'現金不加。計畫書把前三名看法調到約 55%'},{n:'委外 1 名 4 個月',c:240000,p:.19,src:'奪牌配置才把這筆列入'}];
+var FIX=[['運算','Jetson AGX Orin 開發套件',70000,'NVIDIA，不用研華工控機'],['腕與夾爪','腕部 Dynamixel ×3',27000,'ROBOTIS，估算'],['腕與夾爪','頭部轉台 Dynamixel ×2',10000,'ROBOTIS，估算'],['電源安全','24V 20Ah LiFePO4',30000,'電芯日韓、台灣組裝']];
+var OPT={base:BASE,lift:LIFT,tele:TELE,grip:GRIP,sens:SENS,power:POWER,fab:FAB,test:TEST,travel:TRAVEL,claude:CLAUDE,tech:TECH};
+var SL=[['base','底盤'],['lift','升降'],['tele','伸縮臂'],['grip','夾爪'],['sens','感測'],['power','人機與安全'],['fab','製作與道具'],['test','測試'],['travel','差旅'],['claude','Claude'],['tech','技術員']];
+var PRE={'保守':{base:0,lift:0,tele:0,grip:0,sens:0,power:0,fab:0,test:0,travel:0,claude:0,tech:0,res:10,bud:1000000},'建議':{base:1,lift:1,tele:1,grip:1,sens:1,power:1,fab:1,test:1,travel:1,claude:1,tech:0,res:15,bud:2000000},'奪牌':{base:1,lift:1,tele:1,grip:2,sens:2,power:2,fab:2,test:2,travel:2,claude:2,tech:2,res:12,bud:3000000}};
+var DEF=Object.assign({},PRE['建議']);
+var S=Object.assign({},DEF);
+var $=function(i){return document.getElementById(i)};
+var wan=function(n){return (n/10000).toFixed(1)+' 萬'};
+var CAT=['底盤','機構','腕與夾爪','感測','運算','人機','電源安全','製作','測試','差旅','Claude','技術員','預備金'];
+var COL=['#0891b2','#2563eb','#db2777','#7c3aed','#4f46e5','#ca8a04','#ea580c','#65a30d','#0d9488','#0e7490','#64748b','#b45309','#9ca3af'];
+function lines(s){
+var o=[];
+o.push(['底盤',BASE[s.base].n,BASE[s.base].c,BASE[s.base].src]);
+o.push(['機構',LIFT[s.lift].n,LIFT[s.lift].c,LIFT[s.lift].src]);
+o.push(['機構',TELE[s.tele].n,TELE[s.tele].c,TELE[s.tele].src]);
+GRIP[s.grip].lines.forEach(function(r){o.push(r)});
+SENS[s.sens].lines.forEach(function(r){o.push(r)});
+FIX.forEach(function(f){o.push(f)});
+POWER[s.power].lines.forEach(function(r){o.push([r[0],r[1],r[2],'見拉桿'])});
+FAB[s.fab].lines.forEach(function(r){o.push([r[0],r[1],r[2],FAB[s.fab].src])});
+TEST[s.test].lines.forEach(function(r){o.push([r[0],r[1],r[2],TEST[s.test].src])});
+TRAVEL[s.travel].lines.forEach(function(r){o.push([r[0],r[1],r[2],TRAVEL[s.travel].src])});
+o.push(['Claude',CLAUDE[s.claude].n,CLAUDE[s.claude].c,CLAUDE[s.claude].src]);
+if(TECH[s.tech].c)o.push(['技術員',TECH[s.tech].n,TECH[s.tech].c,TECH[s.tech].src]);
+return o}
+function calc(s){
+var items=lines(s);
+var sub=items.reduce(function(a,r){return a+r[2]},0);
+var res=Math.round(sub*s.res/100);
+var cost=sub+res;
+var full=s.base===1&&s.lift===1&&s.tele===1&&s.grip>=1&&s.sens>=1;
+var p=full?(0.36+TECH[s.tech].p):(s.lift===0&&s.tele===0?0.22:0.28);
+var w=48.5+LIFT[s.lift].kg+TELE[s.tele].kg+GRIP[s.grip].kg+SENS[s.sens].kg;
+return {items:items,sub:sub,res:res,cost:cost,p:p,full:full,w:w,
+nav:Math.min(.95,.72+.08*s.sens+.04*s.base),
+drawer:Math.min(.95,.5+.18*s.tele+.14*(s.grip>=1?1:0)+.06*s.lift),
+instr:Math.min(.95,.48+.16*s.lift+.14*(s.grip>=1?1:0)+.08*(s.sens>=1?1:0)),
+vision:Math.min(.95,.7+.08*(s.sens>=1?1:0)+.04*(s.sens===2?1:0)),
+button:Math.min(.95,.72+.1*s.tele+.06*s.lift)}}
+function tag(){
+var keys=['base','lift','tele','grip','sens','power','fab','test','travel','claude','tech','res'];
+for(var name in PRE){var hit=true;keys.forEach(function(k){if(S[k]!==PRE[name][k])hit=false});if(hit)return name}return ''}
+function build(){
+var h='';
+SL.forEach(function(x){h+='<div class="sl"><label><span>'+x[1]+'</span><span id="v_'+x[0]+'"></span></label><input type="range" id="s_'+x[0]+'" min="0" max="'+(OPT[x[0]].length-1)+'" step="1" value="'+S[x[0]]+'"><small id="d_'+x[0]+'"></small></div>'});
+h+='<div class="sl"><label><span>預備金</span><span id="v_res"></span></label><input type="range" id="s_res" min="5" max="25" step="1" value="'+S.res+'"></div>';
+h+='<div class="sl"><label><span>預算上限</span><span id="v_bud"></span></label><input type="range" id="s_bud" min="600000" max="3000000" step="50000" value="'+S.bud+'"></div>';
+$('sliders').innerHTML=h;
+$('presets').innerHTML=Object.keys(PRE).map(function(k){return '<button data-p="'+k+'">'+k+'</button>'}).join('')+'<button data-p="_">還原</button>';
+Object.keys(S).forEach(function(k){$('s_'+k).oninput=function(){S[k]=+this.value;render()}});
+$('presets').onclick=function(e){var p=e.target.dataset.p;if(!p)return;var v=p==='_'?DEF:PRE[p];Object.keys(v).forEach(function(k){S[k]=v[k];$('s_'+k).value=v[k]});render()}}
+function kpi(l,v,sub,c){return '<div class="k '+c+'"><small>'+l+'</small><b>'+v+'</b><span>'+sub+'</span></div>'}
+function dt(w){var d=new Date(2026,10,10);d.setDate(d.getDate()+Math.round(w*7));return (d.getMonth()+1)+'/'+d.getDate()}
+function render(){
+var o=calc(S),name=tag(),gap=o.cost-S.bud;
+SL.forEach(function(x){var it=OPT[x[0]][S[x[0]]];$('v_'+x[0]).textContent=(S[x[0]]+1)+'/'+OPT[x[0]].length;$('d_'+x[0]).textContent=it.n+(it.c?'　'+wan(it.c):'')});
+$('v_res').textContent=S.res+'%';$('v_bud').textContent=wan(S.bud);
+var cc=gap<=0?'g':gap<=S.bud*.1?'a':'r';
+var wc=o.w<=110?'g':o.w<=120?'a':'r';
+var pc=o.p>=.5?'g':o.p>=.35?'a':'r';
+var known={817300:'保守',1313875:'建議',1929200:'奪牌'}[o.cost];
+$('kpis').innerHTML=kpi('總成本（含預備金）',wan(o.cost),o.cost.toLocaleString()+(known?'　對齊'+known:'　試算'),cc)+kpi('相對預算上限',gap<=0?'低 '+wan(-gap):'超 '+wan(gap),wan(S.bud),cc)+kpi('概念重量',o.w.toFixed(0)+' kg','建議方案 67。上限 120',wc)+kpi('前三名看法',Math.round(o.p*100)+'%',o.full?(S.tech?'加人後約 55%。70% 要 12/20 臂達標':'對齊計畫書 36%'):'機構低於建議方案',pc)+kpi('最長交期',SENS[S.sens].lead+' 週','LiDAR。11/17 下單',SENS[S.sens].lead>6?'a':'g')+kpi('小計',wan(o.sub),'預備金 '+S.res+'%　'+o.res.toLocaleString(),'');
+var al=[];
+if(known)al.push(['g','這組拉桿就是計畫書的'+known+'方案，合計 '+o.cost.toLocaleString()]);
+if(gap>0)al.push(['r','超出預算上限 '+wan(gap)]);
+if(S.base===0)al.push(['a','底盤只列改裝 8 萬。若必須按 18 萬入帳，再加 10 萬']);
+if(S.base===1)al.push(['a','輪轂馬達產地還沒有證明。本週要拿到廣達底盤規格']);
+if(S.lift===0||S.tele===0)al.push(['a','升降或伸縮短於 rover 建議值，器具桌與抽屜的餘裕會變小']);
+if(S.sens===0)al.push(['a','只有一顆 LiDAR、一台相機。後方避障與腕部對準要後補']);
+if(S.tech===0&&o.full)al.push(['a','建議方案沒有技術員。內部支援不加現金，看法約 55%；再加備用電池與相機 5 萬，約 136 萬']);
+if(S.tech===2)al.push(['g','委外技術員 24 萬已列入。這是奪牌配置的人力，不是建議方案']);
+if(!al.some(function(a){return a[0]==='r'}))al.push(['g','沒有超出預算或重量上限。rover 不借廠商整機']);
+$('alerts').innerHTML=al.map(function(a){return '<div class="alert '+a[0]+'">'+a[1]+'</div>'}).join('');
+var tot={};
+o.items.forEach(function(i){tot[i[0]]=(tot[i[0]]||0)+i[2]});
+tot['預備金']=o.res;
+$('cbar').innerHTML=CAT.map(function(k,i){return '<i style="width:'+((tot[k]||0)/o.cost*100)+'%;background:'+COL[i]+'"></i>'}).join('');
+$('cleg').innerHTML=CAT.filter(function(k){return tot[k]}).map(function(k){return '<span><u style="background:'+COL[CAT.indexOf(k)]+'"></u>'+k+' '+wan(tot[k])+'</span>'}).join('');
+$('bom').innerHTML=o.items.map(function(i){return '<tr><td>'+i[0]+'</td><td>'+i[1]+'</td><td class="n">'+i[2].toLocaleString()+'</td><td>'+i[3]+'</td></tr>'}).join('')+'<tr><td colspan="2"><b>小計</b></td><td class="n">'+o.sub.toLocaleString()+'</td><td></td></tr><tr><td colspan="2"><b>預備金 '+S.res+'%</b></td><td class="n">'+o.res.toLocaleString()+'</td><td></td></tr><tr><td colspan="2"><b>合計</b></td><td class="n"><b>'+o.cost.toLocaleString()+'</b></td><td>'+(known?'與 trc_plan 的'+known+'方案相同':'拉桿試算')+'</td></tr>';
+function bar(l,v,c,t){return '<div class="row"><span>'+l+'</span><div class="track"><i style="width:'+(v*100)+'%;background:var(--'+c+')"></i></div><b>'+t+'</b></div>'}
+var cf=function(v){return v>=.85?'g':v>=.7?'a':'r'};
+$('acc').innerHTML=[['導航與對接',o.nav],['抽屜與藥盒',o.drawer],['器具取放',o.instr],['巡檢視覺',o.vision],['樓層按鈕',o.button]].map(function(x){return bar(x[0],x[1],cf(x[1]),Math.round(x[1]*100)+'%')}).join('')+'<p class="note">這些百分比只跟著拉桿走，用來比較配置，不是實驗室成績，也不取代計畫書的 36%。</p>';
+var rk={tech:(S.tele===1&&S.lift===1&&S.grip>=1?35:70),func:(o.full?40:65),sch:(SENS[S.sens].lead>=6?45:30),sup:(S.base===1?40:55),staff:(S.tech===0?60:30)};
+$('risk').innerHTML=[['技術',rk.tech],['功能',rk.func],['時程',rk.sch],['供應鏈',rk.sup],['人力',rk.staff]].map(function(x){var c=x[1]<35?'g':x[1]<55?'a':'r';return bar(x[0],x[1]/100,c,x[1])}).join('');
+var T=17.4,P=function(w){return Math.max(0,Math.min(100,w/T*100))+'%'},W=function(a,b){return Math.max(0,Math.min(100,(b-a)/T*100))+'%'};
+var lead=SENS[S.sens].lead,rows=[['採購交期',1,1+lead,'#94a3b8'],['機構與組裝',1,8,'#2563eb'],['伸縮臂閘門',8,9.5,'#ea580c'],['三關連跑',12,15.9,'#0e7a3d']];
+var mk=[['12/14 初審',4.9],['1/15 臂',9.5],['3/1 達標',15.9],['3/11 決賽',17.3]];
+$('gantt').innerHTML='<div style="position:relative;padding-top:18px">'+mk.map(function(m){return '<div class="gm" style="left:'+P(m[1])+'"><em>'+m[0]+'</em></div>'}).join('')+rows.map(function(r){return '<div class="gr"><span>'+r[0]+'</span><div class="gb" style="left:'+P(r[1])+';width:'+W(r[1],r[2])+';background:'+r[3]+'"></div></div>'}).join('')+'</div>';
+$('gnote').textContent='起點 11/10。LiDAR 交期 '+lead+' 週。12/14 用底盤、立柱、面板與喇叭拍初審，伸縮臂可以還沒完成。70% 的條件是 12/20 臂的下垂達標，拉桿調不到這個日期。';
+}
+var OSS=[['stretch_ros2、stretch4_urdf','Nav2 組織與關節鏈範本','以各倉庫 LICENSE 為準','只參考結構。尺寸改成 rover。stretch_body 不能直接用'],['Dynamixel SDK','腕、夾爪、頭部','ROBOTIS，開源 SDK','驅動自寫，不接廠商手臂控制箱'],['Nav2、SLAM Toolbox','導航、避障、對接','Apache-2.0／LGPL-2.1','速度上限 0.6 m/s'],['OpenCV、ZXing-C++','ArUco、條碼、顏色','Apache-2.0','65 吋螢幕與器具辨識'],['BehaviorTree.CPP','任務與 50 秒自恢復','MIT','掉了不重試'],['stretch4_web_teleop','實驗室除錯','Apache-2.0','不上場。比賽禁止遙控'],['stretch4_pyhesai_wrapper','不採用','Hesai','中國品牌 LiDAR，不用']];
+$('oss').innerHTML=OSS.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('');
+build();render();
+</script>
+</body>
+</html>

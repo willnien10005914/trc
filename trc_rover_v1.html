@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>rover｜廣達長庚照護機器人概念設計</title>
+<style>
+:root{color-scheme:light;--bg:#eef1f5;--card:#fff;--fg:#142033;--mut:#5c6b7c;--line:#d5dbe3;--brand:#0c3d6e;--g:#0e7a3d;--a:#b45309;--r:#b42318;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1318;--card:#171c23;--fg:#e8ebf0;--mut:#9aa4b2;--line:#2c3440;--brand:#6aa9ff;--g:#4ade80;--a:#fbbf24;--r:#f87171}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1318;--card:#171c23;--fg:#e8ebf0;--mut:#9aa4b2;--line:#2c3440;--brand:#6aa9ff;--g:#4ade80;--a:#fbbf24;--r:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+header{background:var(--brand);color:#fff;padding:14px 16px}header h1{margin:0;font-size:19px}header p{margin:2px 0 0;font-size:12px;opacity:.88}
+main{max-width:1100px;margin:0 auto;padding:12px 16px 40px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 11px;cursor:pointer}
+button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+section{display:none}section.on{display:block}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+h2{font-size:14px;margin:0 0 8px}
+#cv{height:430px;border:1px solid var(--line);border-radius:10px;background:var(--bg);touch-action:none;overflow:hidden}#cv canvas{display:block;width:100%;height:100%}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.leg span{font-size:12px;color:var(--mut);margin-right:12px}.leg u{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px;text-decoration:none}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12.5px}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{white-space:nowrap;color:var(--mut)}td.n{text-align:right;white-space:nowrap}
+.ok{color:var(--g)}.wa{color:var(--a)}.bd{color:var(--r)}.note{font-size:12px;color:var(--mut);margin:6px 0 0}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}.kp div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}.kp small{color:var(--mut);font-size:11px}.kp b{display:block;font-size:18px}
+.ref{display:block;width:100%;max-height:460px;object-fit:contain;background:#f4efe6;border:1px solid var(--line);border-radius:10px}
+@media(max-width:760px){.kp{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>rover｜廣達長庚照護機器人</h1><p>升降立柱＋側向伸縮臂＋3 軸腕＋四輪全向底盤，帶面板、喇叭、麥克風　|　概念設計 v1，2026/11/10　|　計畫見 trc_plan.html，成本見 trc_cost.html</p></header>
+<main>
+<div class="kp" id="kp"></div>
+<nav id="tabs"><button data-t="a" class="on">3D 概念</button><button data-t="b">過三關對照</button><button data-t="c">規格檢核</button><button data-t="d">BOM</button><button data-t="e">Hello Robot 重用</button><button data-t="f">風險與里程碑</button></nav>
+
+<section id="a" class="on"><div class="box"><h2>參考構型</h2><img class="ref" src="stretch_ref.jpg" alt="Hello Robot Stretch 參考構型：底盤、升降立柱、側向伸縮臂與腕"><p class="note">這張是 Hello Robot Stretch 的參考圖。rover 只沿用底盤、升降立柱、側向伸縮與腕這條關節鏈。底盤用廣達既有四輪平台，機構與驅動自己做，不移植原廠馬達板與韌體。</p><div id="cv"></div><div class="row" id="poses"></div>
+<div class="row"><button id="env" class="on">規格包絡 65×80×175 cm</button><span class="note">拖曳旋轉，滾輪縮放。綠色為場地道具示意。</span></div>
+<div class="leg"><span><u style="background:#3b82f6"></u>面板</span><span><u style="background:#22c55e"></u>喇叭 ×2</span><span><u style="background:#d946ef"></u>麥克風陣列</span><span><u style="background:#f59e0b"></u>LiDAR</span><span><u style="background:#dc2626"></u>急停</span><span><u style="background:#1f6feb"></u>升降滑台</span></div>
+<p class="note">配置：左側桅桿帶升降滑台，伸縮臂朝右側伸出（與參考圖相同的側向配置），腕部俯仰＋偏航，夾爪可朝下抓取或朝側面勾拉。左前方立柱放面板、喇叭、麥克風與頭部相機。這是 rover 的概念包絡，尺寸與廣達底盤的實際規格需對照後修正。</p></div></section>
+
+<section id="b"><div class="box"><div class="scroll"><table><thead><tr><th>關卡</th><th>要求</th><th>設計對應</th><th>驗收指標</th></tr></thead><tbody id="map"></tbody></table></div>
+<p class="note">以上是「紙上可行」的對照，不是已驗證。抽屜把手高度、藥盒外形、器具外形我沒有實測，須用長庚的真實藥車與器具確認。</p></div></section>
+
+<section id="c"><div class="box"><div class="scroll"><table><thead><tr><th>項目</th><th>要求</th><th>本設計</th><th>狀態</th></tr></thead><tbody id="chk"></tbody></table></div></div>
+<div class="box"><h2>重量估算（kg，皆為假設值）</h2><div class="scroll"><table><tbody id="wt"></tbody></table></div><p class="note">廣達底盤的自重、載重與尺寸尚未取得，30 kg 為假設。靜態翻覆粗估：伸出 0.71 m 且持 2 kg 時，抗翻力矩約為翻覆力矩的 7 倍；實機需做伸出急停測試。</p></div></section>
+
+<section id="d"><div class="box"><div class="scroll"><table><thead><tr><th>類別</th><th>品項</th><th class="n">NT$</th><th>產地／依據</th><th>信心</th></tr></thead><tbody id="bom"></tbody></table></div><p class="note">匯率 1 USD = 32 NT$。金額與 trc_plan、trc_cost 的建議方案相同：小計 1,142,500，加 15% 為 1,313,875。「估算」需報價取代。面板、喇叭、麥克風的品牌請在採購時核產地；Hello Robot Stretch 3 使用的 ReSpeaker 麥克風陣列為中國來源品牌，rover 不沿用。</p></div></section>
+
+<section id="e"><div class="box"><div class="scroll"><table><thead><tr><th>Hello Robot 項目</th><th>我們的用法</th><th>注意</th></tr></thead><tbody id="re"></tbody></table></div><p class="note">我只看了 GitHub 組織頁列出的 61 個倉庫中的前 10 個與總覽，其餘未逐一檢查；授權以各倉庫 LICENSE 為準。公開頁面沒有看到機構 CAD 的倉庫，所以機構需自行設計。</p></div></section>
+
+<section id="f"><div class="box"><div class="scroll"><table><thead><tr><th>風險</th><th>影響</th><th>對策</th></tr></thead><tbody id="rk"></tbody></table></div></div>
+<div class="box"><div class="scroll"><table><thead><tr><th>日期</th><th>里程碑</th><th>通過條件</th></tr></thead><tbody id="ms"></tbody></table></div></div></section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var tabs=document.querySelectorAll('#tabs button');
+tabs.forEach(function(b){b.onclick=function(){tabs.forEach(function(x){x.classList.toggle('on',x===b)});document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===b.dataset.t)});if(b.dataset.t==='a')rs()}});
+/* 參數 */
+var D={baseW:.50,wheelW:.07,baseD:.70,mastX:-.17,liftMin:.45,liftMax:1.55,mastTop:1.66,stroke:.75,gap:.12,grip:.17};
+var edge=D.baseW/2+D.wheelW;
+var reachOut=D.mastX+.45+D.stroke-edge;
+/* BOM */
+var BOM=[
+['底盤','廣達四輪全向底盤（RA8T2＋BLDC 輪轂）',180000,'廣達既有設計，請填實際成本；輪轂馬達產地須可舉證','待填'],
+['升降','線性模組 1.0 m＋伺服馬達與驅動器（升降滑台）',90000,'台灣線性模組廠；未報價','估算'],
+['伸縮臂','側向伸縮臂 0.75 m 行程（兩段滑軌＋馬達）',50000,'台灣滑軌或線性模組；未報價','估算'],
+['腕與夾爪','腕部偏航／俯仰 Dynamixel ×3＋支架',27000,'ROBOTIS 韓國；單價為估算','估算'],
+['腕與夾爪','夾爪（RH-P12-RN 級）＋客製指尖與抽屜鉤',70000,'夾爪 5 萬為估算，指尖鉤 2 萬沿用計畫書','估算'],
+['頭部','頭部俯仰轉台 Dynamixel ×2',10000,'ROBOTIS 韓國','估算'],
+['感測','RealSense D455（頭部）',20000,'產地 TH；禁用 D455f（CN）','查價'],
+['感測','RealSense D405 級近距相機（腕部）',12000,'產地請核對','估算'],
+['感測','Hokuyo UST-10LX ×2（前後）',106000,'日本；US$1,670×32×2','查價'],
+['人機','10.1 吋觸控面板（台灣品牌）',8000,'採購時核產地','估算'],
+['人機','喇叭 ×2＋D 類功放',3000,'採購時核產地','估算'],
+['人機','USB 麥克風陣列（非 ReSpeaker）',3500,'採購時核產地','估算'],
+['運算','Jetson AGX Orin 開發套件',70000,'NVIDIA；計畫書數字','查價'],
+['電源','24V 20Ah LiFePO4 電池（電芯日韓）',30000,'須可出具電芯產地','估算'],
+['電源','DC-DC、保險絲、連接器、線束',18000,'計畫書','估算'],
+['安全','Pilz 安全繼電器＋急停',35000,'計畫書','估算'],
+['網路','Moxa 交換器',12000,'計畫書','估算'],
+['結構','鋁擠、蓋板、列印件、頭部立柱',60000,'長庚機械製作；估算','估算'],
+['測試','道具（藥車、床旁櫃、器具桌、按鈕面板、假人）',60000,'計畫書','估算'],
+['測試','磅秤、功率計、標定治具',25000,'計畫書','估算'],
+['差旅','高雄差旅',120000,'計畫書','估算'],
+['差旅','運輸保險',25000,'計畫書','估算'],
+['人力','Claude Team（4 Premium＋10 Standard，4.5 個月）',108000,'14 席，US$3,375×32，與 trc_plan 相同','估算']];
+var sub=0;BOM.forEach(function(r){sub+=r[2]});var res=Math.round(sub*.15),tot=sub+res;
+$('bom').innerHTML=BOM.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="n">'+r[2].toLocaleString()+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td></tr>'}).join('')+'<tr><td colspan="2"><b>小計</b></td><td class="n">'+sub.toLocaleString()+'</td><td colspan="2"></td></tr><tr><td colspan="2"><b>預備金 15%</b></td><td class="n">'+res.toLocaleString()+'</td><td colspan="2"></td></tr><tr><td colspan="2"><b>合計</b></td><td class="n"><b>'+tot.toLocaleString()+'</b></td><td colspan="2">與 trc_plan、trc_cost 建議方案相同</td></tr>';
+/* 重量 */
+var WT=[['廣達四輪底盤（含輪轂馬達）',30],['電池',5.5],['桅桿、升降滑台與馬達',10],['側向伸縮臂',6],['腕與夾爪',1.5],['頭部立柱、面板、喇叭、麥克風',4],['Orin 與線束',4],['感測器',1],['結構蓋板',5]];
+var W=WT.reduce(function(a,r){return a+r[1]},0);
+$('wt').innerHTML=WT.map(function(r){return '<tr><td>'+r[0]+'</td><td class="n">'+r[1]+'</td></tr>'}).join('')+'<tr><td><b>合計</b></td><td class="n"><b>'+W.toFixed(1)+'</b></td></tr>';
+var wd=D.baseW+2*D.wheelW;
+$('kp').innerHTML=[['估算成本（含預備金）',(tot/10000).toFixed(0)+' 萬'],['估算整機重量',W.toFixed(0)+' kg（前版約 105）'],['待機高度',(D.mastTop*100).toFixed(0)+' cm'],['側向最大伸出（距輪外緣）',(reachOut*100).toFixed(0)+' cm']].map(function(x){return '<div><small>'+x[0]+'</small><b>'+x[1]+'</b></div>'}).join('');
+/* 規格檢核 */
+function st(ok,t){return '<td class="'+(ok?'ok':'bd')+'">'+t+'</td>'}
+var gh=D.gap+.5,gb=D.gap+.45;
+var CK=[['寬','≤ 65 cm',(wd*100).toFixed(0)+' cm',wd<=.65],['深','≤ 80 cm',(D.baseD*100).toFixed(0)+' cm',D.baseD<=.8],['待機高度','≤ 175 cm',(D.mastTop*100).toFixed(0)+' cm',D.mastTop<=1.75],
+['重量','< 120 kg，越輕越好',W.toFixed(0)+' kg（假設）',W<120],
+['器具桌最高面 1.355 m','夾爪需在桌面上方',(D.liftMax-D.grip).toFixed(2)+' m 為夾爪底，高於 1.355',D.liftMax-D.grip>1.355],
+['藥車抽屜與床旁櫃 0.82 m','升降下限可及',D.liftMin+' m 起，可及',D.liftMin<=.82],
+['器具桌遠邊（距車側 '+gh.toFixed(2)+' m）','伸出 ≥ 遠邊',(reachOut).toFixed(2)+' m，餘裕 '+((reachOut-gh)*100).toFixed(0)+' cm',reachOut>=gh],
+['床旁櫃遠邊（距車側 '+gb.toFixed(2)+' m）','伸出 ≥ 遠邊',(reachOut).toFixed(2)+' m，餘裕 '+((reachOut-gb)*100).toFixed(0)+' cm',reachOut>=gb],
+['手臂收回','不超出車寬','末端在車內',true]];
+$('chk').innerHTML=CK.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td>'+st(r[3],r[3]?'符合':'不符')+'</tr>'}).join('');
+/* 三關對照 */
+var MAP=[
+['1 給藥','讀 65 吋電視（Times New Roman）','頭部相機俯仰對準電視，離線 OCR','2–3 m 距離連續 20 次正確'],
+['1 給藥','避 4 人型障礙與 2 輪椅，≤ 0.6 m/s','前後 Hokuyo＋Nav2；全向底盤可橫移微調','0 碰撞 / 10 次'],
+['1 給藥','ArUco 對準藥車、床旁櫃（床旁櫃容許約 2 cm）','頭部相機粗對位，腕部近距相機精對位，視覺伺服','停靠誤差 ≤ ±1 cm'],
+['1 給藥','拉開抽屜、取藥盒、推回','夾爪勾住把手，臂收回與底盤側移共同拉出；夾爪朝下取盒；推回用閉合夾爪','抽屜循環一次成功率 ≥ 90%'],
+['1 給藥','放入床旁櫃區域線內','腕部相機看區域線，朝下放置','落點誤差 ≤ ±1 cm'],
+['2 巡檢','跨樓層按鈕（先看燈號）','夾爪閉合以指尖點按，腕部相機確認燈號','3 次內按對 ≥ 90%'],
+['2 巡檢','離床、跌落、病人服綠色、心跳 5 吋 320×240、點滴 120 ml','頭部相機＋腕部近拍監視器；床面佔用、顏色、數字模板、像素對毫升','各項在實驗室達標；點滴 ±5 ml'],
+['2 巡檢','結果必須用語音或螢幕報出，否則該項 0 分','面板顯示結果卡，喇叭同時播報（預錄語音片段組合，不靠雲端）；麥克風錄存證','每項都有輸出，連跑 20 次 0 遺漏'],
+['3 器具','20 類抽 4，依序夾到桌上，尖端朝上','腕部近距相機辨識；朝下夾取；腕部偏航決定朝向；升降涵蓋 0.96–1.355 m 桌高','4 件放置成功率與朝上比例，每類 ≥ 30 次抓放'],
+['3 器具','手臂碰撞 0 次','慢速、先收臂再移動、伸出前先升降到位','0 碰撞 / 10 次']];
+$('map').innerHTML=MAP.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('');
+var RE=[['stretch_ros2（ROS 2 Humble、Nav2、teleop demo）','參考 Nav2 與 URDF 的組織方式','驅動綁 Hello Robot 的馬達板，預期要自寫我們的驅動（未逐檔驗證）'],
+['stretch_body／stretch_firmware','只參考「升降＋伸縮＋腕」的介面設計','用 Arduino 馬達板；我們是 RA8T2＋伺服，不能直接用'],
+['stretch4_urdf','做 rover 的 URDF 範本（升降、伸縮、腕關節鏈）','只參考結構，尺寸改成 rover'],
+['stretch4_mujoco（BSD-3-Clause-Clear）','補充模擬','此授權不含專利授權'],
+['stretch4_hybrid_marker_demo','參考 LiDAR 反光材料加 ArUco 的對接做法','比賽的 ArUco 由主辦裝，隊伍不可加標記，只參考概念'],
+['stretch4_compliant_gripper（Apache-2.0）','夾爪建模與控制參考','rover 的夾爪不同，只參考方法'],
+['stretch4_tool_share','指尖、鉤子等末端工具設計靈感','社群設計，各自授權'],
+['stretch4_web_teleop（Apache-2.0）','只在開發除錯用','比賽禁止遙控，不上場'],
+['stretch4_pyhesai_wrapper','不採用','Hesai LiDAR 為中國公司產品，違反核心零組件管制']];
+$('re').innerHTML=RE.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('');
+var RK=[['自製升降與伸縮臂：剛性、下垂、加工交期','最大。決定抽屜與器具成功率','11/17 前完成機構定案；12 月先做「底盤＋立柱＋面板」拍初審影片；伸縮臂先做縮小原型'],
+['全向底盤打滑，橫移與拉抽屜的距離不準','對準與拉出失敗','以 ArUco 閉環；抽屜拉出用臂收回為主，底盤側移為輔'],
+['廣達底盤規格與載重未取得','整機尺寸與重量不確定','本週取得底盤尺寸、載重、急停輸入規格'],
+['面板、喇叭、麥克風產地','檢錄被質疑','採購單寫明品牌與產地；不使用 ReSpeaker'],
+['麥克風被當成語音遙控','可能算人為介入','比賽時麥克風只錄音，不接收指令；請向主辦確認'],
+['備案','自製機構來不及','1/15 若伸縮臂未達標，改用前版儀表板中的 OpenMANIPULATOR-P＋短升降方案']];
+$('rk').innerHTML=RK.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('');
+var MS=[['11/16','報名','線上報名、切結、智財原則'],['11/27','介面凍結','機構定案、底盤規格取得、感測器下單'],['12/14','初審','底盤＋立柱＋面板＋喇叭可移動的實機影片'],['1/15','伸縮臂閘門','臂行程 0.75 m、2 kg 時下垂 ≤ 5 mm，否則啟用備案'],['1/31','給藥','抽屜循環 ≥ 90%'],['2/5','功能凍結','三關都有得分路徑'],['3/1','達標演練','連續三次全流程，並有語音或螢幕輸出'],['3/7','映像凍結','之後只改參數']];
+$('ms').innerHTML=MS.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('');
+/* 3D */
+var T=THREE,el=$('cv'),sc=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50),rd=new T.WebGLRenderer({antialias:true,alpha:true});el.appendChild(rd.domElement);
+sc.add(new T.AmbientLight(0xffffff,.75));var dl=new T.DirectionalLight(0xffffff,.7);dl.position.set(2,4,3);sc.add(dl);sc.add(new T.GridHelper(4,16,0x8a8f99,0xb9bdc6));
+var R=new T.Group();sc.add(R);
+function mt(c,o){return new T.MeshLambertMaterial(o?{color:c,transparent:true,opacity:o}:{color:c})}
+function bx(w,h,d,c,x,y,z,p,o){var m=new T.Mesh(new T.BoxGeometry(w,h,d),mt(c,o));m.position.set(x,y,z);(p||R).add(m);return m}
+function cy(r,h,c,x,y,z,p,rot){var m=new T.Mesh(new T.CylinderGeometry(r,r,h,20),mt(c));m.position.set(x,y,z);if(rot)m.rotation.z=Math.PI/2;(p||R).add(m);return m}
+bx(D.baseW,.27,D.baseD,0x56627a,0,.165,0);bx(D.baseW,.02,D.baseD,0x2e3542,0,.31,0);
+[-1,1].forEach(function(sx){[-1,1].forEach(function(sz){cy(.09,D.wheelW,0x222a35,sx*(D.baseW/2+D.wheelW/2),.09,sz*.26,R,true)})});
+bx(.4,.25,.2,0x8a93a3,0,.45,-.27);
+bx(.05,.07,.05,0xf59e0b,0,.345,.33);bx(.05,.07,.05,0xf59e0b,0,.345,-.33);
+bx(.06,D.mastTop-.3,.06,0x4b5563,D.mastX,.3+(D.mastTop-.3)/2,-.12);
+cy(.035,.03,0xdc2626,D.mastX,.9,-.17,R).rotation.x=Math.PI/2;
+var carr=new T.Group();R.add(carr);bx(.12,.1,.12,0x1f6feb,0,0,0,carr);
+bx(.45,.05,.05,0xaab4c2,.225,0,0,carr);var inner=bx(.45,.035,.035,0xe5e7eb,.225,0,0,carr);
+var wr=new T.Group();wr.rotation.order='YXZ';carr.add(wr);bx(.05,.05,.05,0x1f6feb,0,0,0,wr);bx(.05,.17,.04,0x1f2937,0,-.085,0,wr);bx(.012,.05,.03,0x9ca3af,-.02,-.17,0,wr);bx(.012,.05,.03,0x9ca3af,.02,-.17,0,wr);
+bx(.04,1.2,.04,0x4b5563,-.15,.9,.30);
+var pn=bx(.26,.17,.02,0x3b82f6,-.15,1.2,.325);pn.rotation.x=-.25;
+bx(.06,.05,.04,0x22c55e,-.24,1.03,.33);bx(.06,.05,.04,0x22c55e,-.06,1.03,.33);
+cy(.04,.015,0xd946ef,-.15,1.52,.30,R);bx(.12,.03,.03,0x1f2937,-.15,1.45,.33);
+var env=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(.65,1.75,.8)),new T.LineBasicMaterial({color:0xf59e0b}));env.position.set(0,.875,0);sc.add(env);
+var pr={cart:bx(.44,1.09,.65,0x22c55e,.72,.545,-.12,sc,.3),cab:bx(.45,.82,.45,0x22c55e,.725,.41,-.12,sc,.3),btn:bx(.03,.4,.25,0x22c55e,.575,1.15,-.12,sc,.4),tbl:new T.Group()};
+bx(.5,.03,.7,0x22c55e,.75,.985,-.12,pr.tbl,.4);bx(.08,.98,.08,0x22c55e,.75,.49,-.12,pr.tbl,.4);sc.add(pr.tbl);
+var H=Math.PI/2,PO={'收納':{l:.6,e:0,p:-H,y:0,pr:''},'1 拉抽屜':{l:.85,e:.06,p:-H,y:H,pr:'cart'},'1 放床旁櫃':{l:1.05,e:.45,p:0,y:0,pr:'cab'},'2 按樓層鍵':{l:1.15,e:.12,p:-H,y:H,pr:'btn'},'3 器具桌':{l:1.22,e:.45,p:0,y:0,pr:'tbl'}};
+var cur=Object.assign({},PO['收納']),tg=Object.assign({},cur);
+function show(k){Object.keys(pr).forEach(function(n){pr[n].visible=(n===k)})}show('');
+Object.keys(PO).forEach(function(k,i){var b=document.createElement('button');b.textContent=k;if(!i)b.className='on';b.onclick=function(){tg=Object.assign({},PO[k]);show(PO[k].pr);$('poses').querySelectorAll('button').forEach(function(x){x.className=x===b?'on':''})};$('poses').appendChild(b)});
+$('env').onclick=function(){env.visible=!env.visible;this.classList.toggle('on',env.visible)};
+var th=.8,ph=1.2,rad=3.4,dg=null;
+el.addEventListener('pointerdown',function(e){dg=[e.clientX,e.clientY];el.setPointerCapture(e.pointerId)});el.addEventListener('pointerup',function(){dg=null});
+el.addEventListener('pointermove',function(e){if(!dg)return;th-=(e.clientX-dg[0])*.008;ph=Math.max(.2,Math.min(1.5,ph-(e.clientY-dg[1])*.008));dg=[e.clientX,e.clientY]});
+el.addEventListener('wheel',function(e){e.preventDefault();rad=Math.max(1.5,Math.min(7,rad*(e.deltaY>0?1.08:.92)))},{passive:false});
+function rs(){var w=el.clientWidth||600;rd.setSize(w,430,false);cam.aspect=w/430;cam.updateProjectionMatrix()}window.addEventListener('resize',rs);rs();
+(function lp(){requestAnimationFrame(lp);['l','e','p','y'].forEach(function(k){cur[k]+=(tg[k]-cur[k])*.08});
+carr.position.set(D.mastX,cur.l,-.12);inner.position.x=.225+cur.e;wr.position.set(.45+cur.e,0,0);wr.rotation.set(cur.p,cur.y,0);
+cam.position.set(rad*Math.sin(ph)*Math.sin(th),.8+rad*Math.cos(ph),rad*Math.sin(ph)*Math.cos(th));cam.lookAt(.1,.8,0);rd.render(sc,cam)})();
+})();
+</script>
+</body>
+</html>
