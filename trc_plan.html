@@ -3,204 +3,735 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TRC 醫療系統整合組｜機器人概念 CAD、BOM 與時程</title>
+<title>TRC 醫療系統整合組｜Preliminary Plan</title>
 <style>
-:root{color-scheme:light;--bg:#fff;--fg:#1c1f26;--mut:#5d6675;--card:#f3f5f8;--line:#d8dde5;--acc:#0b63c5;--ok:#17803d;--warn:#b45309;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14171c;--fg:#e8ebf0;--mut:#9aa4b2;--card:#1d222a;--line:#323a46;--acc:#6aa9ff;--ok:#4ade80;--warn:#fbbf24}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#14171c;--fg:#e8ebf0;--mut:#9aa4b2;--card:#1d222a;--line:#323a46;--acc:#6aa9ff;--ok:#4ade80;--warn:#fbbf24}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{color-scheme:light;--bg:#f3f5f8;--paper:#fff;--ink:#142033;--mut:#5c6b7c;--line:#d5dbe3;--brand:#0c3d6e;--brand2:#164e82;--soft:#e7eef6;--ok:#0e7a3d;--warn:#8a4b08;--bad:#8f1d1d;--gold:#8a6a2f;--chip:#eef3f8}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
-main{max-width:980px;margin:0 auto;padding:16px}
-h1{font-size:20px;margin:4px 0 2px}h2{font-size:16px;margin:18px 0 6px}
-.sub{color:var(--mut);font-size:13px;margin:0 0 12px}
-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
-button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-section{display:none}section.on{display:block}
-#cv{height:440px;border:1px solid var(--line);border-radius:10px;background:var(--card);touch-action:none;overflow:hidden}
-#cv canvas{display:block;width:100%;height:100%}
-.row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+a{color:var(--brand2)}
+.cover{background:var(--brand);color:#fff;padding:28px 20px 22px}
+.cover-in,.wrap{max-width:1100px;margin:0 auto}
+.kicker{letter-spacing:.08em;font-size:12px;opacity:.8;margin:0 0 6px}
+h1{font-size:28px;line-height:1.3;margin:0 0 8px;font-weight:650}
+.deck{margin:0;max-width:820px;font-size:16px;line-height:1.55}
+.meta{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:13px;opacity:.9}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.kpi{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px 12px}
+.kpi b{display:block;font-size:20px;font-weight:650}
+.kpi span{font-size:12px;opacity:.85}
+nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+nav .wrap{display:flex;gap:6px;flex-wrap:wrap;padding:8px 16px}
+nav a{text-decoration:none;color:var(--ink);background:var(--chip);border-radius:999px;padding:4px 10px;font-size:13px}
+main{padding:8px 16px 48px}
+section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px;margin:14px auto;max-width:1100px}
+h2{font-size:20px;margin:0 0 8px}
+h3{font-size:16px;margin:16px 0 6px}
+p{margin:8px 0}
+.mut{color:var(--mut);font-size:13px}
+.note,.call{border-radius:10px;padding:10px 12px;margin:10px 0}
+.note{background:var(--soft);border:1px solid #d3e0ee}
+.call{background:#f8f1e3;border:1px solid #ead7b0}
+.bad{background:#fdecec;border:1px solid #f0c8c8}
+.okbox{background:#eef8f1;border:1px solid #cfe6d6}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+.card h3{margin-top:0}
 .scroll{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0 14px}
 th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
-th{background:var(--card);white-space:nowrap}
-td.n,th.n{text-align:right;white-space:nowrap}
-.ok{color:var(--ok)}.warn{color:var(--warn)}
-.note{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px;margin:10px 0}
+th{background:#f6f8fb;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;border-radius:999px;padding:0 8px;font-size:12px;line-height:1.7;background:var(--chip)}
+.must{background:#e5f4ea;color:var(--ok)}
+.nice{background:#fff4df;color:var(--warn)}
+.opt{background:#f3e8e8;color:var(--bad)}
+.hi{color:var(--bad);font-weight:650}.md{color:var(--warn);font-weight:650}.lo{color:var(--ok);font-weight:650}
+.bar{height:10px;background:#e6ebf1;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand)}
+.org{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0 14px}
+.org .box{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff;text-align:center;min-width:180px}
+.org .box small{display:block;color:var(--mut)}
+.row3{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.vline{width:2px;height:14px;background:var(--line)}
+#cv{height:460px;border:1px solid var(--line);border-radius:10px;background:#eef2f6;touch-action:none;overflow:hidden}
+#cv canvas{display:block;width:100%;height:100%}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0}
+button{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+svg.fig{width:100%;height:auto;background:#f7f9fb;border:1px solid var(--line);border-radius:10px}
+.gantt{font-size:11px}
+.gantt td,.gantt th{padding:3px;text-align:center}
+.gantt td.on{background:#0c3d6e;min-width:22px}
+.gantt td.hold{background:#c47b2b;min-width:22px}
+.gantt td.gate{background:#0e7a3d;min-width:22px}
+.prob{display:flex;align-items:center;gap:8px;margin:4px 0}
+.prob span{width:92px;font-size:13px}
+.prob b{width:48px;text-align:right}
+footer{max-width:1100px;margin:0 auto;color:var(--mut);font-size:12px;padding:0 4px 20px}
+@media(max-width:860px){.kpis,.grid2,.grid3{grid-template-columns:1fr}h1{font-size:22px}}
+@media print{
+nav,.noprint{display:none!important}
+body{background:#fff}
+.cover{background:#fff;color:#000;padding:0}
+section{break-inside:avoid;border:none;padding:0}
+h2{break-after:avoid}
+}
 </style>
 </head>
 <body>
+<header class="cover">
+<div class="cover-in">
+<p class="kicker">QUANTA × CHANG GUNG UNIVERSITY · INTERNAL PRELIMINARY PLAN · 2026-11-10</p>
+<h1>TRC 醫療照護系統整合組<br>初步競賽計畫</h1>
+<p class="deck">目標是取得前三名，而不只是完賽。以現有 14 人與建議預算約新臺幣 170 萬，前三名的規劃判斷是 <b>48%</b>。指定一名競賽負責人，並增加一名全職技術員之後，期望情況可到 <b>72%</b>。</p>
+<div class="meta">
+<span>報名主體：廣達</span>
+<span>合作學校：長庚大學</span>
+<span>組別：醫療照護 · 系統整合驗證組</span>
+<span>決賽：2027/3/11–3/12 · 高雄展覽館</span>
+<span>前版：git 0676d08</span>
+</div>
+<div class="kpis">
+<div class="kpi"><b>520 分</b><span>三關合計滿分。給藥 220、器具 170、巡檢 130</span></div>
+<div class="kpi"><b>20 分鐘</b><span>整場時限。時間只在同分時比快</span></div>
+<div class="kpi"><b>14 人</b><span>廣達 7、長庚電機 3、長庚機械 3</span></div>
+<div class="kpi"><b>約 170 萬</b><span>建議方案含 15% 預備金。獎金不足以回本</span></div>
+</div>
+</div>
+</header>
+<nav><div class="wrap">
+<a href="#summary">摘要</a>
+<a href="#win">得獎策略</a>
+<a href="#team">團隊與分工</a>
+<a href="#arch">技術架構</a>
+<a href="#hw">Medical Explorer</a>
+<a href="#make">自製與採購</a>
+<a href="#oss">開源</a>
+<a href="#sched">時程</a>
+<a href="#resource">人力</a>
+<a href="#budget">預算</a>
+<a href="#risk">風險</a>
+<a href="#success">成功標準</a>
+<a href="#biz">商品化</a>
+<a href="#prob">前三名機率</a>
+</div></nav>
 <main>
-<h1>醫療照護應用組・系統整合驗證組：機器人概念設計</h1>
-<p class="sub">依 TRC 2026 醫療組手冊與簡章整理。本頁為概念級（envelope）CAD，非可直接加工的製造圖；價格依據見 BOM 表，標「估算」者需向廠商報價。</p>
-<nav id="tabs"><button data-t="a" class="on">3D 概念模型</button><button data-t="b">BOM 成本</button><button data-t="c">開發時程</button><button data-t="d">走線與電源</button><button data-t="e">底盤（火星車參考）</button><button data-t="f">開源資源</button><button data-t="g">團隊 14 人</button></nav>
 
-<section id="a" class="on">
+<section id="summary">
+<h2>Executive Summary</h2>
+<p>廣達以企業身分組產學聯隊，與長庚大學參加第一屆臺灣機器人競賽（TRC）醫療照護應用、系統整合驗證組。系統必須全程自主，禁止遙控。龍騰獎（第一名，獎金 100 萬）的門檻是三個關卡都有有效分數，且安全與完整性經評審確認。虎躍獎 80 萬、鳳翔獎 60 萬。主辦單位可以在沒有隊伍達標時從缺。</p>
+<p>分數結構決定策略。藥物配送 220 分，約占 42%；手術器具 170 分，約占 33%；病房巡檢 130 分，約占 25%。前兩關的成敗都在「第一次就抓對、放對」。掉落不得重試。人員碰觸機器人並改位置，該關直接不計分。碰撞會吃掉每關 10 分的安全分。速度上限 1.5 m/s，但名次先比分數、再比時間、再比重量與高度。因此內部速度上限設在 0.6 m/s，把安全分留住。</p>
+<div class="call"><b>請主管這週決定的五件事。</b> 第一，核定建議方案現金約 170 萬（精確數見預算節，含 15% 預備金）。第二，指定一名廣達成員為競賽負責人，建議由洪士軒擔任，11/16 報名前可調整。第三，同意增加一名全職技術員四個月；人由長庚或廣達內部支援時，現金約 176 萬，委外則約 200 萬。第四，達明手臂本週申請借用；移動平台在自重與載重規格書通過「整機 ≤ 110 kg」之前不下單。第五，報名前完成產學智財原則的書面協議。</div>
+<p>機器人概念定名為 <b>Medical Explorer</b>。外形取火星車的配置邏輯：後置動力甲板、前置服務臂、感測桅桿、本體醫療螢幕。輪式移動平台向台灣供應商採購，不自製搖臂轉向架。核心自製的是任務決策、螢幕判讀、抽屜與器具的一次取放、病房視覺，以及這台機器的結構與重心。</p>
+<p>這份文件是給廣達主管的內部計畫。繳給主辦單位的 30 頁初審技術文件是另一份交付物，必須附實機照片或影片。簡章原訂初審日為 115/10/31；廣達 BU10 提案記載報名延至 2026/11/16、決賽 2027/3/11–3/12。本計畫依 BU10 日期執行，並把 2026/12/14 訂為內部初審閘門。負責人須在本週向主辦確認書面截止日。</p>
+<p class="mut">價格凡標估算者都不是報價。匯率以 1 USD = 32 TWD 計畫匯率。配分、場地尺寸與器具外觀以醫療組競賽手冊為準；手冊標示限閱，細節若改版，以主辦公告取代本文件對應段落。核心零組件不使用受限供應鏈，採購單需能提出產地。</p>
+</section>
+
+<section id="win">
+<h2>Winning Strategy</h2>
+<p>得獎來自分數乾淨，而不是機構新穎。內部完賽目標是 420/520：給藥 190、巡檢 100、器具 130。時間預算是給藥 8 分鐘、跨樓層與巡檢 6 分鐘、器具 4 分鐘、緩衝 2 分鐘。連續三次實驗室全流程達到這個門檻，才視為具備前三名的技術條件。</p>
+<div class="grid3">
+<article class="card">
+<h3>第一關 · 藥物配送 · 220 分</h3>
+<p>賽前 5 分鐘抽顏色籤，決定 4 具人型障礙與 2 張輪椅的擺法。機器人讀 65 吋電視（Times New Roman），到指定藥車，拉開抽屜，取出指定藥盒，把抽屜推回，再到指定病床的床旁櫃，放進區域線內。系統整合組是 2 部藥車、指定 2 個藥盒、2 張病床。藥車為長庚醫學科技護理工作車，65×44×109 cm。床旁櫃 45×45×82 cm，單邊容許約 2 cm。藥車、病床、床旁櫃有主辦設置的 ArUco。</p>
+<p><b>分數。</b> 兩台藥車都對準 20，只到一台 5。兩盒辨識、拉屜、取盒為主要分數，拉對抽屜但取盒失敗有部分分數，辨識錯、掉落或抽屜失敗為 0。兩層抽屜都推回 20。兩張病床各 25。區域線內放置各 30，壓線或出線 10。</p>
+<p><b>Winning key。</b> 用 ArUco 對接，不用人推。抽屜鉤與指尖每週改一版。掉了就走下一步，軟體不重試。安全分靠 0.6 m/s 與膨脹的障礙區守住。</p>
+<p><b>驗證。</b> 實驗室 replica 連續 20 次抽屜循環，記錄一次成功率。低於 90% 不進全流程聯跑。</p>
+</article>
+<article class="card">
+<h3>第二關 · 病房巡檢 · 130 分</h3>
+<p>先做跨樓層按鈕。紅燈不可通過；綠燈才可進巡檢區。三次以內按對，分數由 20 降到 10；超過三次黃燈通過只得 5；紅燈硬闖，本關以最低分計。巡檢五種情境抽四種：離床、跌落、心跳、點滴、病人服是否為綠色。心跳固定在同一張床。監視器是 Philips HeartStart XL，5 吋、320×240。點滴是尼得立斯 120 ml 計量套，誤差 5 ml 以內满分，5–15 ml 得 10。結果必須用本體語音或螢幕報出，否則該項 0 分。認錯床，該站 0 分。</p>
+<p><b>Winning key。</b> 按鈕用指尖點按，相機確認燈號後才前進。病人服走顏色。點滴走像素對毫升的標定。心跳走該型監視器的數字模板。離床與跌落先用床面與地面的佔用判斷；假人姿態模型先試，不把它放在關鍵路徑上。</p>
+<p><b>驗證。</b> 用同型監視器與同型點滴套拍照。點滴在實驗室先達到 ±5 ml。沒有語音或螢幕輸出的版本不得參加聯跑。</p>
+</article>
+<article class="card">
+<h3>第三關 · 手術器具 · 170 分</h3>
+<p>螢幕指定左區或右區。20 種器具中抽 4 種，按順序夾到器具桌。桌為 MAQUET 4464.9500，70×50 cm，高度 96–135.5 cm。放置要在區域線內、順序正確、尖端朝上、互不重疊。途中掉落不得重拾。器具桌有 ArUco。初始擺位由主辦配置，隊伍不得改，也不得在器具上加標記。</p>
+<p><b>分數。</b> 走對區域 20。手臂碰撞 0 次 20，少於 3 次 10，4 次以上 0。4 件都送到 60，3 件 50，2 件 35，1 件 25。順序、尖端朝上、不重疊各 20，依完成件數遞減。</p>
+<p><b>Winning key。</b> 姿態分數與夾取分數幾乎一樣重。指尖要讓尖端自然朝上，而不是夾到再翻轉。20 類都要能認，因為賽前才抽 4 類。碰撞預算用慢速與預先收臂守住。</p>
+<p><b>驗證。</b> 以手冊器具清單建立 20 類照片集。每類至少 30 次抓放，記錄尖端朝上的比例。桌高先按 96 cm 調機，並確認 135 cm 的極限姿態是否在包絡內。</p>
+</article>
+</div>
+<h3>三關共通的贏法</h3>
+<div class="scroll"><table>
+<thead><tr><th>規則</th><th>對分數的影響</th><th>我們的作法</th></tr></thead>
+<tbody>
+<tr><td>停頓 1 分鐘沒有有效動作</td><td>強制進入維修，消耗 2 次額度之一</td><td>行為樹在 50 秒內自行換策略。人不得碰機器人</td></tr>
+<tr><td>維修最多 2 次，每次最多 2 分鐘，時間照計</td><td>超過就該關不計分</td><td>2 分鐘演練只允許重開程式與確認急停復歸，不允許改機</td></tr>
+<tr><td>開賽後 1 分鐘內必須開始動作</td><td>否則直接進維修</td><td>一鍵任務。開機自檢在上場前做完</td></tr>
+<tr><td>人工重新定位</td><td>該關不計分</td><td>定位失敗就用 LiDAR 與 ArUco 自恢復</td></tr>
+<tr><td>急停</td><td>安全機制，不算人工干預</td><td>硬體切斷底盤與手臂動力。運算單元維持供電以留紀錄。檢錄時現場示範</td></tr>
+<tr><td>同分</td><td>先比時間，再比重量，再比高度</td><td>目標重量 105 kg 上下、收納高度約 158 cm。重量每週上磅</td></tr>
+<tr><td>龍騰獎</td><td>任一關 0 分就失去第一名資格</td><td>巡檢即使分較少，也必須做出可舉證的基本分。不放棄第二關</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="team">
+<h2>Team Organization</h2>
+<p>簡章規定產學聯隊以企業為報名主體，學研單位不能單獨報系統整合組。廣達報名、簽約、採購、對主辦窗口。長庚大學提供機構、電控與臨床道具。技術分工寫進報名資料。</p>
+<div class="org">
+<div class="box">廣達 · 報名主體與預算<small>對外窗口、供應鏈切結、採購</small></div>
+<div class="vline"></div>
+<div class="box">競賽負責人<small>建議：洪士軒 Vick Hung · 待確認</small></div>
+<div class="vline"></div>
+<div class="row3">
+<div class="box">廣達軟體與整合 · 7 人<small>ROS 2、導航、規劃、視覺、人機、模擬、驗證</small></div>
+<div class="box">長庚電機 · 張永華教授<small>黎保越、黎春江<br>控制、感測、嵌入式、電控</small></div>
+<div class="box">長庚機械 · 張耀仁教授<small>陳英山、黃明孝<br>機構、結構、試作、驗證</small></div>
+</div>
+<div class="vline"></div>
+<div class="box">建議新增 · 技術員 1 名<small>線束、組裝、指尖迭代、2 分鐘維修演練</small></div>
+</div>
+<h3>廣達 · 建議配置</h3>
+<p class="mut">下列個人職責是建議，不是既有職稱。總人力估算不依賴這張表如何微調。負責人於 11/16 前確認。</p>
+<div class="scroll"><table>
+<thead><tr><th>成員</th><th>建議職責</th><th>直接對應的分數</th></tr></thead>
+<tbody>
+<tr><td>洪士軒 Vick Hung</td><td>競賽負責人、系統整合、初審文件</td><td>三關都有分數、初審過關</td></tr>
+<tr><td>粘育瑋 Will Nien</td><td>Nav2、動態障礙、藥車與病床對接</td><td>給藥的移動 20 分與兩床 50 分；走廊安全分</td></tr>
+<tr><td>連廷睿 Ray Lian</td><td>MoveIt 2、達明驅動、抽屜與器具運動</td><td>給藥取放、器具取放與尖端朝上</td></tr>
+<tr><td>黃品淳 Patrick Huang</td><td>視覺：條碼、器具、病房、監視器與點滴</td><td>藥盒辨識、器具 20 類、巡檢四情境</td></tr>
+<tr><td>陳淑鈴 Shu-Ling Chen</td><td>行為樹、本體螢幕與語音舉證</td><td>巡檢沒有輸出就是 0 分；故障自恢復</td></tr>
+<tr><td>劉潔昕 Phoebe Liu</td><td>模擬、聯跑紀錄、評分演練、影片</td><td>初審影片與 3/1 達標門檻</td></tr>
+<tr><td>王晨豫 Leo Wang</td><td>Orin 映像、日誌、開發環境。比賽當天不依賴雲端</td><td>開機 1 分鐘內可啟動；維修可重現</td></tr>
+</tbody></table></div>
+<h3>長庚大學</h3>
+<div class="scroll"><table>
+<thead><tr><th>成員</th><th>單位</th><th>負責</th></tr></thead>
+<tbody>
+<tr><td>張永華 Yung-Hua Chang 教授</td><td>電機</td><td>電控架構、安全回路審查、感測整合指導</td></tr>
+<tr><td>黎保越 Bao Viet Le</td><td>電機博士生</td><td>嵌入式、感測接線、電源量測</td></tr>
+<tr><td>黎春江 Xuan Giang Le</td><td>電機碩士生</td><td>線束圖、急停回路、驅動介面</td></tr>
+<tr><td>張耀仁 Yao-Jen Chang 教授</td><td>機械</td><td>結構、重心、試作審查</td></tr>
+<tr><td>陳英山 Anh-Son Tran</td><td>機械博士生</td><td>桅桿、後甲板、藥車與器具桌 replica</td></tr>
+<tr><td>黃明孝 Minh Hieu Hoang</td><td>機械碩士生</td><td>指尖、抽屜鉤、夾具迭代與上磅</td></tr>
+</tbody></table></div>
+<h3>Partnership Model</h3>
+<div class="scroll"><table>
+<thead><tr><th>事項</th><th>廣達</th><th>長庚電機</th><th>長庚機械</th></tr></thead>
+<tbody>
+<tr><td>報名、切結、對主辦</td><td>負責</td><td>提供名單與簽名</td><td>提供名單與簽名</td></tr>
+<tr><td>任務軟體與分數策略</td><td>負責</td><td>支援感測資料</td><td>支援機構限位</td></tr>
+<tr><td>導航、手臂規劃、視覺</td><td>負責</td><td>相機與 LiDAR 供電</td><td>感測器安裝面</td></tr>
+<tr><td>安全回路與電源</td><td>規格與驗收</td><td>負責</td><td>急停按鈕的機構位置</td></tr>
+<tr><td>桅桿、甲板、指尖、道具</td><td>介面凍結</td><td>線束配合</td><td>負責</td></tr>
+<tr><td>重量、重心、聯跑</td><td>負責排程</td><td>共同</td><td>共同</td></tr>
+<tr><td>決賽當週</td><td>操作與軟體</td><td>電控備援</td><td>機構備援</td></tr>
+</tbody></table></div>
+<p>決策方式：每週一次 60 分鐘會議，單一工作清單。進度由競賽負責人裁示。電機與機械的設計變更，分別由兩位教授點頭。影響重量、安全或分數策略的變更，三方一起決定。</p>
+<div class="note">報名前要寫下來的三件事。背景智財留在原單位；競賽中新產生的整合成果由雙方共有，廣達取得醫療機器人商業利用的專屬授權，長庚保留學術發表，發表前給廣達 30 日內審機密。全體上場人員簽署參賽切結與個資、肖像同意，學生是否逐一親簽請主辦確認。大學成員能否進入廣達的 Claude Team，由資訊與採購確認，不影響競賽資格。作品必須是自行研發或合法授權，開源元件保留 LICENSE。</div>
+</section>
+
+<section id="arch">
+<h2>Technical Architecture</h2>
+<p>比賽當天的系統是一台離線機器人。雲端只存在於開發期，用來存日誌、版本與資料集。65 吋電視是輸入，本體螢幕與語音是輸出。</p>
+<div class="scroll"><table>
+<thead><tr><th>層</th><th>內容</th><th>來源</th><th>比賽時</th></tr></thead>
+<tbody>
+<tr><td>任務</td><td>三關行為樹、50 秒自恢復、維修次數計數、分數相關的放棄策略（掉了就下一件）</td><td>自製，BehaviorTree.CPP</td><td> onboard </td></tr>
+<tr><td>感知</td><td>65 吋螢幕判讀、一維條碼、ArUco、器具分類、床面佔用、綠色病人服、點滴液位、心跳模板、燈號</td><td>OpenCV 為主，偵測模型為輔</td><td>onboard</td></tr>
+<tr><td>運動</td><td>Nav2 對接與動態避障；MoveIt 2 配合達明驅動；抽屜與尖端朝上的抓取腳本</td><td>開源加自製任務</td><td>onboard</td></tr>
+<tr><td>計算</td><td>Jetson AGX Orin。開發套件先開跑，研華 MIC-733 作為比賽主機</td><td>採購</td><td>onboard</td></tr>
+<tr><td>安全</td><td>蘑菇頭 → Pilz 安全繼電器 → 切斷底盤驅動與手臂動力。速度上限鎖在控制器</td><td>採購加長庚電機配線</td><td>硬體優先</td></tr>
+<tr><td>人機</td><td>本體螢幕與語音報出巡檢結果。開發用日誌不上場傳輸</td><td>自製</td><td>本體</td></tr>
+<tr><td>模擬</td><td>先用 Gazebo Harmonic 與主辦 URDF 把行為樹跑起來。Isaac Sim 在工作站到位後補視覺</td><td>開源／NVIDIA 免費工具</td><td>不上場</td></tr>
+</tbody></table></div>
+<p>版本在 2/5 功能凍結。春節只修缺陷。3/7 比賽映像凍結，之後只允許設定值變更。達明驅動、MoveIt 2 與 JetPack 的組合在 11 月鎖定 commit，避免臨賽升級。</p>
+</section>
+
+<section id="hw">
+<h2>Robot Hardware Architecture · Medical Explorer</h2>
+<p>Medical Explorer 是一台室內移動操作機器人。配置對應火星探測車的三個仍有用的特徵：後置設備艙壓低並拉回重心、前置機械臂做服務、桅桿上的相機看高處的監視器與點滴。JPL Open Source Rover 只作為構型參考，它的載重與尺寸不能直接放大來用。</p>
+<div class="scroll"><table>
+<thead><tr><th>火星車特徵</th><th>醫院室內的判斷</th><th>本計畫</th></tr></thead>
+<tbody>
+<tr><td>搖臂轉向架、六輪常時著地</td><td>賽場是平整室內。寬度建議 65 cm，六輪沒有空間優勢</td><td>不採用。移動平台採購</td></tr>
+<tr><td>六輪獨立轉向</td><td>里程計誤差不利於對準 2 cm 等級的床旁櫃</td><td>差速或既有舵輪平台。需要側移時選成熟的麥克納姆平台，不自製輪組</td></tr>
+<tr><td>桅桿相機</td><td>要看 5 吋監視器、點滴與床位</td><td>採用。桅桿頂部 RealSense D455</td></tr>
+<tr><td>前置機械臂</td><td>藥車抽屜、床旁櫃、器具桌、樓層按鈕都在身前</td><td>採用。TM5-900 裝於立柱，肩高約 85–100 cm</td></tr>
+<tr><td>低位障礙相機與避障</td><td>走廊有人型障礙與輪椅，每場重新抽籤</td><td>前後 Hokuyo。低位相機列為選配</td></tr>
+</tbody></table></div>
+
+<h3>3D CAD Concept</h3>
+<p class="mut">概念包絡模型，用來檢查姿態與建議尺寸，不是製造圖。拖曳旋轉，滾輪縮放。</p>
 <div id="cv"></div>
-<div class="row" id="poses"></div>
-<div class="row"><button id="env" class="on">顯示規格包絡 65×80×175 cm</button><span class="sub" id="hint">拖曳旋轉、滾輪縮放</span></div>
-<h2>規格檢核（概念值）</h2>
-<div class="scroll"><table><thead><tr><th>項目</th><th>規定</th><th>本設計</th><th>狀態</th></tr></thead><tbody>
-<tr><td>寬</td><td>≤ 65 cm（建議）</td><td>60 cm</td><td class="ok">符合</td></tr>
-<tr><td>深</td><td>≤ 80 cm（建議）</td><td>75 cm</td><td class="ok">符合</td></tr>
-<tr><td>高（收納姿態）</td><td>≤ 175 cm（建議）；伸展 ≤ 200 cm</td><td>約 158 cm</td><td class="ok">符合</td></tr>
-<tr><td>重量</td><td>&lt; 120 kg；同分時越輕越好</td><td>估約 105–110 kg（底盤重量為假設）</td><td class="warn">餘裕小，須盡早實秤</td></tr>
-<tr><td>最高速度</td><td>≤ 1.5 m/s</td><td>AMR50-BASE 標稱 1 m/s</td><td class="ok">符合</td></tr>
-<tr><td>緊急停止</td><td>實體按鈕、切斷動力</td><td>後柱紅色蘑菇頭＋安全繼電器</td><td class="ok">設計中</td></tr>
+<div class="row noprint" id="poses"></div>
+<div class="row noprint"><button id="env" class="on" type="button">顯示建議包絡 65×80×175 cm</button><span class="mut">收納、藥車抽屜、器具桌三種姿態</span></div>
+<p class="mut">深藍平台、灰色後甲板（控制箱與電池）、立柱上的醫療螢幕與頂部相機、藍白前置服務臂、橘色前後 LiDAR、紅色急停。綠框是藥車或器具桌的工作參考。</p>
+
+<h3>Mechanical Layout</h3>
+<p>平面占位 60×75 cm，收納高度約 158 cm，低於建議值 175 cm。手臂伸出不計入待機尺寸，伸展高度保持在 200 cm 以內。後甲板放控制箱、電池、逆變器與電腦，用來平衡前置手臂。</p>
+<svg class="fig" viewBox="0 0 920 280" role="img" aria-label="Medical Explorer 側視與上視概念">
+<text x="16" y="22" font-size="13" fill="#142033">側視 · 概念尺寸 cm</text>
+<rect x="40" y="150" width="250" height="70" fill="#56627a"/>
+<rect x="40" y="130" width="250" height="22" fill="#8a93a3"/>
+<rect x="150" y="70" width="16" height="80" fill="#4b5563"/>
+<rect x="120" y="78" width="46" height="28" fill="#111827"/>
+<rect x="168" y="118" width="70" height="14" fill="#3b82f6"/>
+<rect x="230" y="100" width="14" height="46" fill="#d1d5db"/>
+<circle cx="70" cy="224" r="14" fill="#1f2937"/>
+<circle cx="250" cy="224" r="14" fill="#1f2937"/>
+<line x1="40" y1="248" x2="290" y2="248" stroke="#8a6a2f"/>
+<text x="300" y="252" font-size="11" fill="#5c6b7c">地面</text>
+<text x="40" y="268" font-size="11" fill="#5c6b7c">深度 75 · 後甲板在左 · 手臂向前</text>
+<text x="430" y="22" font-size="13" fill="#142033">上視 · 60 × 75 cm</text>
+<rect x="500" y="50" width="200" height="160" fill="none" stroke="#0c3d6e" stroke-width="2"/>
+<rect x="520" y="150" width="160" height="44" fill="#8a93a3"/>
+<rect x="575" y="70" width="50" height="40" fill="#3b82f6"/>
+<circle cx="600" cy="64" r="8" fill="#f59e0b"/>
+<circle cx="600" cy="206" r="8" fill="#f59e0b"/>
+<text x="720" y="78" font-size="12" fill="#142033">前 LiDAR、桅桿、手臂</text>
+<text x="720" y="178" font-size="12" fill="#142033">後 LiDAR、動力甲板、急停</text>
+<text x="500" y="240" font-size="11" fill="#5c6b7c">工作高度參考：床旁櫃 82、藥車 109、器具桌 96–135.5</text>
+</svg>
+
+<h3>規格檢核</h3>
+<div class="scroll"><table>
+<thead><tr><th>項目</th><th>規定</th><th>本設計</th><th>狀態</th></tr></thead>
+<tbody>
+<tr><td>寬</td><td>建議 ≤ 65 cm</td><td>60 cm</td><td class="lo">符合</td></tr>
+<tr><td>深</td><td>建議 ≤ 80 cm</td><td>75 cm</td><td class="lo">符合</td></tr>
+<tr><td>待機高度</td><td>建議 ≤ 175 cm；伸展 ≤ 200 cm</td><td>約 158 cm</td><td class="lo">符合</td></tr>
+<tr><td>重量</td><td>&lt; 120 kg；同分較輕者優先</td><td>概念估算約 105 kg，平台自重仍是假設</td><td class="md">上磅前不下結論</td></tr>
+<tr><td>速度</td><td>≤ 1.5 m/s</td><td>任務速度 0.6 m/s，硬上限 1.5</td><td class="lo">符合</td></tr>
+<tr><td>急停</td><td>實體按鈕，切斷動力，檢錄要示範</td><td>後方蘑菇頭 + Pilz 安全繼電器，並接入手臂外部安全輸入</td><td class="lo">納入設計</td></tr>
+<tr><td>通行餘裕</td><td>建議對通道留約 30%</td><td>60 cm 寬相對 65 cm 建議值留有餘裕</td><td class="lo">符合</td></tr>
 </tbody></table></div>
-<div class="note">配置邏輯：6 軸協作手臂（TM5-900，臂展約 0.9 m）裝在 85 cm 高的立柱上，涵蓋藥車抽屜（約 85–110 cm）、床旁櫃（82 cm）與器具桌（96–135 cm）；手臂控制箱放在底盤後方壓低重心；前側立柱放螢幕（語音／螢幕回報）與頂部深度相機（看生命徵象監視器與點滴）。</div>
-</section>
 
-<section id="b">
-<div class="scroll"><table id="bom"><thead><tr><th>類別</th><th>品項</th><th class="n">數量</th><th class="n">單價 NT$</th><th class="n">小計 NT$</th><th>價格依據</th><th>信心</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div>
-<div class="note">匯率以 1 USD = 32 NT$ 粗估。TM5-900 採達明借用方案（數量有限、先報名先得、運費自付）；若借不到須另購，價格需向達明詢價。LiDAR 與相機價格為美國零售價，台灣代理價與交期需另詢。</div>
-</section>
-
-<section id="c">
-<div class="scroll"><table><thead><tr><th>期間</th><th>工作</th><th>主要風險</th></tr></thead><tbody id="tl"></tbody></table></div>
-<h2>人力估算（人週，估算）</h2>
-<p class="sub">底盤電源與急停 4｜導航避障 6｜藥車抽屜＋條碼取藥 8｜床旁櫃放置 3｜跨樓層按鈕 3｜病房五情境視覺 10｜手術器具 20 選 4（辨識＋取放＋擺放）12｜任務決策與螢幕判讀 5｜整合與連跑 10。合計約 61 人週；8 人 18 週的總容量約 144 人週（兼職 50% 約 72），可行但無太多緩衝。</p>
-</section>
-
-<section id="d">
-<div class="scroll"><table><thead><tr><th>線路</th><th>來源 → 目的</th><th>備註</th></tr></thead><tbody id="wr"></tbody></table></div>
-</section>
-
-<section id="e">
-<div class="note">參考對象：NASA／JPL 火星車（Sojourner、MER、Curiosity 一脈）與 JPL Open Source Rover。MER 的前置機械臂（IDD）臂展約 0.75 m、約 4 kg，與本案「前置手臂＋桅桿感測」的架構相同；但本案手臂約 22.6 kg，等級完全不同。</div>
-<div class="scroll"><table><thead><tr><th>火星車特徵</th><th>本案評估</th><th>建議</th></tr></thead><tbody>
-<tr><td>搖臂轉向架（rocker-bogie）被動懸吊，六輪常保著地</td><td>賽場是平整室內，收益小；寬度限 65 cm，六輪佔空間</td><td>不採用；先向主辦確認場地有無門檻或坡道</td></tr>
-<tr><td>六輪驅動、四角獨立轉向</td><td>里程計誤差較大，不利於對準藥車與床旁櫃</td><td>需要側移就選麥克納姆輪或現成舵輪底盤，不自製</td></tr>
-<tr><td>桅桿感測頭（高位相機）</td><td>適用：看監視器、點滴、床位</td><td>採用：前側立柱＋D455</td></tr>
-<tr><td>前置機械臂</td><td>概念相同</td><td>採用：TM5-900 裝於立柱</td></tr>
-<tr><td>低位危害相機、自主避障</td><td>適用</td><td>前後 LiDAR＋Nav2；低位相機選配</td></tr>
+<h3>Sensor Layout</h3>
+<div class="scroll"><table>
+<thead><tr><th>感測器</th><th>位置</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>Hokuyo UST-10LX</td><td>前、後各一，約平台高度</td><td>動態避障、倒車離開藥車與病床</td></tr>
+<tr><td>RealSense D455</td><td>桅桿頂</td><td>監視器、點滴、燈號、病床。需能靠近到約 0.6–1.0 m</td></tr>
+<tr><td>RealSense D455</td><td>靠近手臂或腕部視線</td><td>藥盒條碼、抽屜、器具姿態、65 吋螢幕</td></tr>
+<tr><td>手臂內建相機</td><td>TM5-900</td><td>近距離對位的備援</td></tr>
+<tr><td>ArUco</td><td>主辦裝在藥車、病床、床旁櫃、器具桌</td><td>對接與 ID。隊伍不加自己的標記</td></tr>
 </tbody></table></div>
-<h2>底盤兩案</h2>
-<div class="scroll"><table><thead><tr><th>方案</th><th>內容</th><th>整合時間（估算）</th><th>風險</th></tr></thead><tbody>
-<tr><td>A 買 ADATA AMR50-BASE（建議）</td><td>載重 50 kg、1 m/s 的空機平台</td><td>1–2 週</td><td>尺寸、重量、介面未知，須先拿規格書</td></tr>
-<tr><td>B 自製差速底盤，參考 JPL OSR 的機構概念</td><td>OSR 為 Apache-2.0、OSHWA 認證，有 Onshape 模型與 ROS 程式；但它是縮小版教育車，載重未必撐得住約 100 kg 的整機</td><td>6–8 週</td><td>馬達驅動、電源、急停全要自己做，軟體團隊風險高</td></tr>
+
+<h3>Power Architecture</h3>
+<svg class="fig" viewBox="0 0 920 168" role="img" aria-label="電源架構">
+<rect x="16" y="50" width="120" height="48" rx="6" fill="#0c3d6e"/>
+<text x="76" y="78" text-anchor="middle" fill="#fff" font-size="12">24V 電池</text>
+<rect x="170" y="50" width="90" height="48" rx="6" fill="#fff" stroke="#142033"/>
+<text x="215" y="78" text-anchor="middle" font-size="12">保險絲</text>
+<rect x="294" y="50" width="110" height="48" rx="6" fill="#f8f1e3" stroke="#8a6a2f"/>
+<text x="349" y="78" text-anchor="middle" font-size="12">Pilz 安全繼電器</text>
+<rect x="440" y="16" width="140" height="40" rx="6" fill="#fff" stroke="#142033"/>
+<text x="510" y="40" text-anchor="middle" font-size="12">底盤驅動</text>
+<rect x="440" y="64" width="140" height="40" rx="6" fill="#fff" stroke="#142033"/>
+<text x="510" y="88" text-anchor="middle" font-size="12">逆變器 → 手臂</text>
+<rect x="440" y="112" width="200" height="40" rx="6" fill="#fff" stroke="#142033"/>
+<text x="540" y="136" text-anchor="middle" font-size="12">Mean Well → Orin、交換器</text>
+<rect x="700" y="50" width="190" height="48" rx="6" fill="#eef8f1" stroke="#0e7a3d"/>
+<text x="795" y="70" text-anchor="middle" font-size="12">急停同時送達</text>
+<text x="795" y="88" text-anchor="middle" font-size="12">TM 外部安全輸入</text>
+<path d="M136 74 H170 M260 74 H294 M404 74 H430 M430 36 H440 M430 84 H440 M430 132 H440" stroke="#142033" fill="none"/>
+</svg>
+<p>急停切斷底盤與手臂的動力輸出。電腦保持供電，讓日誌還在。這個切法對應「中斷動力」；檢錄前拿回路圖與主辦確認。比賽網路與開發網路分開，上場後沒有對外連線。夾爪電源走手臂末端 24V。LiDAR 走 24V 與乙太網路。兩台 D455 走 USB3，線纜固定。</p>
+
+<h3>Wiring Diagram · 概念線路</h3>
+<div class="scroll"><table>
+<thead><tr><th>線路</th><th>路徑</th><th>要求</th></tr></thead>
+<tbody>
+<tr><td>主動力</td><td>電池 → 保險絲 → 安全繼電器 → 底盤、逆變器、DC-DC</td><td>急停是硬體切斷</td></tr>
+<tr><td>手臂</td><td>逆變器 AC → TM 控制箱 → 手臂。控制箱放後甲板</td><td>借用機若為 AC 版才需要逆變器。外部安全輸入接急停</td></tr>
+<tr><td>運算</td><td>24V → Mean Well → MIC-733 或開發套件</td><td>先確認 DC 輸入範圍</td></tr>
+<tr><td>LiDAR</td><td>24V 與乙太網路 → Moxa → Orin</td><td>前後各一</td></tr>
+<tr><td>相機</td><td>D455 ×2 → USB3 → Orin</td><td>主動線，並固定</td></tr>
+<tr><td>手臂通訊</td><td>Moxa ↔ TM 控制箱</td><td>TMflow 與 ROS 驅動二擇一，11 月定案</td></tr>
+<tr><td>夾爪</td><td>末端 24V／RS-485 → Robotiq 2F-85</td><td>約 24V、0.8A 等級</td></tr>
+<tr><td>人機</td><td>Orin → 本體螢幕與喇叭</td><td>巡檢舉證。與場地 65 吋電視是兩件事</td></tr>
 </tbody></table></div>
-<p class="sub">翻覆粗估：手臂伸出約 0.45 m 會使重心前移約 0.1 m，仍在 60×75 cm 支撐面內；實際重心高度與急停減速度需在整機後實測。</p>
+
+<h3>Weight、重心、續航、維護</h3>
+<div class="scroll"><table>
+<thead><tr><th>模組</th><th class="n">概念質量 kg</th><th>依據</th></tr></thead>
+<tbody>
+<tr><td>移動平台本體</td><td class="n">40</td><td>假設值。規格書未到之前，這是最大的未知數</td></tr>
+<tr><td>TM5-900 手臂</td><td class="n">22.6</td><td>沿用前版</td></tr>
+<tr><td>控制箱</td><td class="n">13.5</td><td>沿用前版，放後甲板</td></tr>
+<tr><td>夾爪</td><td class="n">0.9</td><td>2F-85 量級</td></tr>
+<tr><td>桅桿、螢幕、結構</td><td class="n">10</td><td>估算</td></tr>
+<tr><td>電池</td><td class="n">8</td><td>24V、30Ah 等級 LiFePO4</td></tr>
+<tr><td>逆變器</td><td class="n">4</td><td>AC 手臂才需要。借到 DC 版可拿掉</td></tr>
+<tr><td>電腦與線束</td><td class="n">4</td><td>估算</td></tr>
+<tr><td>感測器</td><td class="n">2</td><td>兩顆 LiDAR 與兩台相機</td></tr>
+<tr><td><b>合計</b></td><td class="n"><b>105</b></td><td>平台自重若是 55 kg，合計就貼到 120 kg 上限</td></tr>
+</tbody></table></div>
+<p><b>下單門檻。</b> 平台自重加上述上裝後，目標 ≤ 110 kg，並保留到 120 kg 的距離。上裝約 65 kg，所以平台的額定載重至少要到 70 kg。前版暫列的 ADATA AMR50-BASE 若載重只有 50 kg，就裝不下手臂、控制箱與電池。規格書確認前不採購。</p>
+<p><b>重心。</b> 以總重 105 kg、收納時重心在幾何中心估算。手臂 22.6 kg 的質心若再向前 0.40 m，整機重心約前移 22.6/105×0.40 ≈ 0.09 m。75 cm 深度的一半是 0.375 m，靜態仍在支撐面內，餘裕約 0.29 m。這個數字會被平台實際自重與急停減速度改寫。整機完成後做伸出急停測試。後甲板的配置就是為了把餘裕留在後方。</p>
+<p><b>續航。</b> 24V×30Ah = 720 Wh，可用能量約 650 Wh。比賽負載粗估：底盤巡航 180 W、手臂平均 200 W 經逆變器約 235 W、Orin 40 W、感測與螢幕 30 W，合計約 485 W。續航約 1.3 小時，夠一場 20 分鐘與候場，不夠一個練習日。建議方案用單組電池；改善方案與奪牌配置加一組可更換電池。</p>
+<p><b>維護。</b> 後甲板模組化。線束用接頭，避免一次性焊接。指尖三套。Orin 保留可回復的映像。比賽允許的 2 分鐘維修，演練內容只含程式重啟與急停復歸。指尖更換是練習日的工作，不是場上維修。</p>
+<h3>Hardware Requirements</h3>
+<div class="scroll"><table>
+<thead><tr><th>項目</th><th>需求</th></tr></thead>
+<tbody>
+<tr><td>計算</td><td>NVIDIA Jetson AGX Orin 等級。比賽主機優先研華 MIC-733。開發套件用來避免工控機交期擋住軟體</td></tr>
+<tr><td>手臂</td><td>六軸、臂展 ≥ 850 mm、負載 ≥ 3 kg、有 ROS 2 驅動、台灣產。首選達明 TM5-900 借用</td></tr>
+<tr><td>平台</td><td>室內、速度可限制、載重 ≥ 70 kg、有急停輸入、整機可壓在 110 kg 內。台灣供應商</td></tr>
+<tr><td>夾爪</td><td>建議方案用 Robotiq 2F-85，加自製指尖與抽屜鉤</td></tr>
+<tr><td>LiDAR</td><td>Hokuyo，前後各一。奪牌配置可加 SICK</td></tr>
+<tr><td>深度相機</td><td>Intel RealSense D455。不購買 D455f</td></tr>
+<tr><td>安全</td><td>Pilz 安全繼電器與蘑菇頭。按鈕位置明顯、防誤觸</td></tr>
+<tr><td>網路與電源</td><td>Moxa 交換器、Mean Well DC-DC、台灣廠純正弦逆變器</td></tr>
+<tr><td>電池</td><td>可提出電芯產地的鋰鐵包裝，電芯限日本或韓國，組裝在台灣</td></tr>
+</tbody></table></div>
 </section>
 
-<section id="f">
-<div class="scroll"><table><thead><tr><th>用途</th><th>專案</th><th>注意</th></tr></thead><tbody>
-<tr><td>中介軟體</td><td>ROS 2 Humble、ros2_control</td><td>TM 官方驅動支援 Humble；須確認 MIC-733 的 JetPack 版本能配合</td></tr>
-<tr><td>導航、避障、對接</td><td>Nav2、slam_toolbox 或 RTAB-Map</td><td>主辦會提供場地 URDF，實地賽前一週開放建圖</td></tr>
-<tr><td>手臂驅動</td><td>TechmanRobotInc/tmr_ros2（TMflow 1，TM5 系列）、tm2_ros2（TMflow 2，S 系列，實驗性）</td><td>依借到的型號選用：TM5-900 用 tmr_ros2，TM5S／TM7S 用 tm2_ros2</td></tr>
-<tr><td>手臂規劃</td><td>MoveIt 2</td><td>有使用者回報 TM 驅動與 MoveIt 2 主線版的相容問題，先鎖版本</td></tr>
-<tr><td>相機、LiDAR</td><td>realsense-ros、Hokuyo urg_node2</td><td>確認各 repo 對你們 ROS 版本的支援</td></tr>
-<tr><td>ArUco、條碼、顏色</td><td>OpenCV（ArUco）、ZXing-C++</td><td>藥盒為一維條碼；病人服為綠色判定</td></tr>
-<tr><td>物件偵測</td><td>Ultralytics YOLO（AGPL-3.0）或 torchvision 偵測模型（BSD）</td><td>AGPL 對閉源有義務，商用前先釐清授權</td></tr>
-<tr><td>跌倒、離床</td><td>MediaPipe Pose</td><td>病人為假人時姿態模型不一定有效，需實測</td></tr>
-<tr><td>讀心跳數字</td><td>Tesseract、EasyOCR、docTR</td><td>監視器為 5 吋 320×240，小數字建議用範本比對或自訓數字分類</td></tr>
-<tr><td>任務流程</td><td>BehaviorTree.CPP、py_trees</td><td>三關、維修與重啟都要寫成可恢復狀態</td></tr>
-<tr><td>Orin 加速</td><td>NVIDIA Isaac ROS、Isaac Sim</td><td>研華贊助方案列有相關資源；Isaac Sim 免費但不是開源</td></tr>
-<tr><td>火星車硬體參考</td><td>nasa-jpl/open-source-rover（Apache-2.0）、Sawppy Rover</td><td>僅作機構概念參考</td></tr>
+<section id="make">
+<h2>Open Source Reuse 與 Buy vs Build</h2>
+<p>分數在任務與末端，不在自製底盤或自製手臂。核心技術自製；成熟的移動、規劃與中介軟體直接用開源；機構本體與安全元件採購，並留下產地文件。</p>
+<div class="scroll"><table>
+<thead><tr><th>項目</th><th>決策</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td>移動平台</td><td>採購</td><td>自製底盤要 6–8 週，還要自己做馬達、電源與急停。賽場是平整地面</td></tr>
+<tr><td>搖臂轉向架</td><td>不納入</td><td>寬度與對接精度都不支持</td></tr>
+<tr><td>手臂</td><td>借用；購置列 90 萬準備金</td><td>達明是台灣廠，TM5 有 ROS 2 驅動。名額先到先得</td></tr>
+<tr><td>夾爪本體</td><td>建議方案採購；保守方案用手臂原廠夾爪</td><td>一次抓取決定給藥與器具的分數</td></tr>
+<tr><td>指尖、抽屜鉤、桅桿、螢幕架、道具</td><td>自製</td><td>這些零件直接對應區域線、尖端朝上與藥車抽屜</td></tr>
+<tr><td>Nav2、SLAM、MoveIt 2、行為樹函式庫</td><td>開源</td><td>成熟，自研沒有分數優勢</td></tr>
+<tr><td>三關任務、螢幕判讀、對接、抓取姿態、病房視覺、舉證人機</td><td>自製</td><td>這是核心技術，也是賽後可留在廣達的整合能力</td></tr>
+<tr><td>雲端服務</td><td>只用於開發</td><td>比賽禁止外部連線與遙控</td></tr>
+<tr><td>中國來源的整機、控制器、LiDAR、相機、通訊、馬達、模型</td><td>不採用</td><td>對應簡章核心管制。一般螺絲不逐層追溯；有聯網或運算功能的元件要能說明來源</td></tr>
 </tbody></table></div>
-<div class="note">授權與維護狀態我只逐一核對了 TM 驅動與 JPL OSR，其餘依一般資訊整理，使用前請看各 repo 的 LICENSE。簡章禁用受限供應鏈的「軟體系統」，來自中國公司的開源模型（例如 PaddleOCR）是否算受限，請先問主辦，預設避開。</div>
+<p>核心技術六項：三關行為與 50 秒自恢復；65 吋任務螢幕判讀；藥車抽屜的拉、取、推；器具尖端朝上的抓取；病房四情境與點滴毫升標定，以及強制輸出的語音或螢幕；Medical Explorer 的重量與重心。</p>
 </section>
 
-<section id="g">
-<p class="sub">依簡章，企業與大學可組「產學聯隊」，須以企業為報名主體並在報名資料載明技術分工；學研單位不能單獨報系統整合組。以下為建議分工，姓名請自行填入。</p>
-<div class="scroll"><table><thead><tr><th>編號</th><th>單位</th><th>角色</th><th>負責</th></tr></thead><tbody>
-<tr><td>E1</td><td>企業</td><td>專案經理、報名窗口</td><td>報名、供應鏈切結、採購、對外聯絡、進度</td></tr>
-<tr><td>E2</td><td>企業</td><td>系統架構</td><td>任務流程、三關串接、螢幕任務判讀</td></tr>
-<tr><td>E3</td><td>企業</td><td>導航</td><td>Nav2、定位、藥車與床旁櫃對接</td></tr>
-<tr><td>E4</td><td>企業</td><td>底盤與嵌入式</td><td>底盤介面、Orin 系統、電源與急停接線</td></tr>
-<tr><td>E5</td><td>企業</td><td>手臂 A</td><td>TM 驅動、MoveIt、第 1 關抽屜與藥盒</td></tr>
-<tr><td>E6</td><td>企業</td><td>手臂 B</td><td>第 3 關器具夾取與擺放、夾爪指尖</td></tr>
-<tr><td>E7</td><td>企業</td><td>視覺</td><td>第 2 關五情境、心跳 OCR、點滴量</td></tr>
-<tr><td>E8</td><td>企業</td><td>測試與模擬</td><td>Gazebo、整合測試、連跑紀錄、影片</td></tr>
-<tr><td>U1</td><td>大學</td><td>機構設計</td><td>立柱、底座、重量與重心、圖面</td></tr>
-<tr><td>U2</td><td>大學</td><td>機構製作與道具</td><td>藥車、床旁櫃、器具桌模擬</td></tr>
-<tr><td>U3</td><td>大學</td><td>電機與線束</td><td>電池、逆變器、安全繼電器、配線</td></tr>
-<tr><td>U4</td><td>大學</td><td>資料集</td><td>20 種器具與病房情境的拍攝、標註</td></tr>
-<tr><td>U5</td><td>大學</td><td>模型訓練</td><td>器具位姿、數字辨識、點滴量模型</td></tr>
-<tr><td>U6</td><td>大學</td><td>人機介面與文件</td><td>螢幕與語音回報、30 頁初審文件</td></tr>
+<section id="oss">
+<h2>Open Source Reuse Strategy</h2>
+<p class="mut">授權以各倉庫 LICENSE 為準。下表是規劃判斷。YOLO 的 AGPL、以及中國公司發行的模型（例如 PaddleOCR），預設不放進可能商品化的程式。比賽原型若要暫用 AGPL 元件，先經廣達法務。</p>
+<div class="scroll"><table>
+<thead><tr><th>專案</th><th>用途</th><th>授權</th><th>成熟度</th><th>TRC 可行性</th><th>導入風險</th><th>建議</th></tr></thead>
+<tbody>
+<tr><td>ROS 2 Humble、ros2_control</td><td>中介軟體</td><td>Apache-2.0</td><td>高</td><td>達明驅動對 Humble 有支援</td><td>JetPack 版本要配得上</td><td>必用，11 月鎖版本</td></tr>
+<tr><td>Nav2</td><td>導航、避障、對接</td><td>Apache-2.0</td><td>高</td><td>走廊每場改障礙，正是它的場面</td><td>參數調校吃時間</td><td>必用</td></tr>
+<tr><td>SLAM Toolbox</td><td>建圖定位</td><td>LGPL-2.1</td><td>高</td><td>賽前開放建圖</td><td>改到函式庫本身需遵守 LGPL</td><td>首選。當元件使用</td></tr>
+<tr><td>Cartographer</td><td>建圖備援</td><td>Apache-2.0</td><td>演算法高，ROS 2 整合較費工</td><td>可作第二套地圖</td><td>同時維護兩套 SLAM 會分散人力</td><td>備援，不並行開發</td></tr>
+<tr><td>MoveIt 2</td><td>手臂規劃</td><td>BSD-3-Clause</td><td>高</td><td>抽屜與器具都需要</td><td>與達明驅動的版本組合曾有不相容報告</td><td>必用，鎖 commit</td></tr>
+<tr><td>tmr_ros2</td><td>TM5、TMflow 1</td><td>以倉庫 LICENSE 為準</td><td>對 TM5 可用</td><td>借用 TM5-900 的正式路徑</td><td>借到 S 系列就要改用 tm2_ros2，後者較實驗性</td><td>必用。借到的型號先確認</td></tr>
+<tr><td>OpenCV（含 ArUco）</td><td>對接、顏色、影像前處理</td><td>Apache-2.0</td><td>高</td><td>ArUco、綠色病人服、燈號都靠它</td><td>低</td><td>必用</td></tr>
+<tr><td>ZXing-C++</td><td>藥盒一維條碼</td><td>Apache-2.0</td><td>高</td><td>直接對應藥盒</td><td>照明</td><td>必用</td></tr>
+<tr><td>Ultralytics YOLO</td><td>器具偵測</td><td>AGPL-3.0</td><td>高</td><td>20 類器具辨識快</td><td>AGPL 對閉源產品有義務</td><td>競賽可評估；商品化路徑另備 BSD 偵測模型</td></tr>
+<tr><td>torchvision 偵測模型</td><td>器具偵測備援</td><td>BSD</td><td>高</td><td>足夠做 20 類</td><td>精度可能需較多資料</td><td>商品化預設路徑</td></tr>
+<tr><td>Segment Anything</td><td>分割</td><td>Apache-2.0</td><td>研究成熟、計算重</td><td>20 件已知器具不必靠它</td><td>Orin 延遲</td><td>選配，不在關鍵路徑</td></tr>
+<tr><td>MediaPipe Pose</td><td>跌落、離床</td><td>Apache-2.0</td><td>高</td><td>假人可能觸發不了姿態模型</td><td>一開始就失敗會拖累巡檢</td><td>先測假人。不過就改床面佔用</td></tr>
+<tr><td>Tesseract、EasyOCR</td><td>心跳數字</td><td>Apache-2.0 等</td><td>中</td><td>320×240 的小字不穩</td><td>誤讀心跳會從 25 分掉到 10 或 0</td><td>只作對照。主路徑是數字模板</td></tr>
+<tr><td>BehaviorTree.CPP</td><td>任務與恢復</td><td>MIT</td><td>高</td><td>三關、維修、放棄策略都要狀態機</td><td>團隊要先會寫樹</td><td>必用</td></tr>
+<tr><td>Gazebo Harmonic</td><td>早期模擬</td><td>Apache-2.0</td><td>高</td><td>主辦提供場地 URDF</td><td>視覺真實度有限</td><td>必用，硬體到貨前就跑任務</td></tr>
+<tr><td>NVIDIA Isaac Sim</td><td>視覺與場景</td><td>NVIDIA 專有授權，可免費使用，不是開源</td><td>高</td><td>適合監視器與器具的合成資料</td><td>需要獨立 GPU 工作站</td><td>建議方案之後、奪牌配置納入工作站</td></tr>
+<tr><td>Isaac ROS、realsense-ros、urg_node2</td><td>Orin 加速、相機、LiDAR</td><td>Apache-2.0／BSD</td><td>高</td><td>與選定硬體一致</td><td>版本鎖</td><td>採用</td></tr>
+<tr><td>nasa-jpl/open-source-rover</td><td>構型參考</td><td>Apache-2.0</td><td>教育平台</td><td>不能當成 100 kg 級底盤</td><td>誤用會吃掉機構工期</td><td>只參考桅桿與前置臂的配置</td></tr>
 </tbody></table></div>
-<div class="note">需先談定的事：智慧財產權歸屬（簡章要求作品為自行研發或合法授權）、大學成員是否也要簽參賽切結書與個資同意書、大學成員能否加入企業的 Claude Team 工作區。這三點請向主辦與 Anthropic 確認。</div>
+</section>
+
+<section id="sched">
+<h2>Development Schedule</h2>
+<p>今天是 2026/11/10。工程窗口算到 2027/3/7，約 16 週、3.7 個月。3/8–3/10 留給高雄場地，3/11–3/12 決賽。2027 春節是 2/6，2/8–2/14 只修缺陷、不開新規格。</p>
+<p>關鍵路徑有兩條，並行。第一條是資格：12/14 前交出可審查的實機影片，即使最終平台還沒到，也用廣達既有移動平台拍。第二條是分數：平台過重量門檻 → 感測器到貨 → 實驗室藥車可拉抽屜 → 第一關穩定 → 第三關姿態 → 20 分鐘三關。初審若失敗，決賽不存在。所以影片不準等 Medical Explorer 全機完成。</p>
+<div class="scroll"><table class="gantt">
+<thead><tr><th>工作</th><th>11/10</th><th>11/17</th><th>11/24</th><th>12/1</th><th>12/8</th><th>12/15</th><th>12/22</th><th>12/29</th><th>1/5</th><th>1/12</th><th>1/19</th><th>1/26</th><th>2/2</th><th>2/9</th><th>2/16</th><th>2/23</th><th>3/2</th><th>3/9</th></tr></thead>
+<tbody id="gantt"></tbody>
+</table></div>
+<p class="mut">深藍為執行，橘色為春節凍結，綠色為決賽週。欄位是該週的週一附近。</p>
+<div class="scroll"><table>
+<thead><tr><th>閘門</th><th>日期</th><th>通過條件</th></tr></thead>
+<tbody>
+<tr><td>報名與借用</td><td>11/16</td><td>線上報名、切結、技術說明、達明借用申請、平台規格書已索取、智財原則已簽</td></tr>
+<tr><td>介面凍結</td><td>11/27</td><td>ROS 2 版本、手臂型號、感測器型號、桅桿介面凍結。LiDAR、相機、Orin 開發套件已下單</td></tr>
+<tr><td>初審</td><td>12/14</td><td>30 頁草稿與實機影片完成。截止日若主辦另有公告，以公告為準</td></tr>
+<tr><td>重量</td><td>平台到貨一週內</td><td>整機投影 ≤ 110 kg 才繼續加裝。超過則先拿掉逆變器方案或更換平台</td></tr>
+<tr><td>給藥</td><td>1/31</td><td>實驗室抽屜循環一次成功率 ≥ 90%</td></tr>
+<tr><td>功能凍結</td><td>2/5</td><td>三關都有分數路徑。春節不加入新感測器或新模型</td></tr>
+<tr><td>奪牌演練</td><td>3/1</td><td>連續三次全流程：給藥 ≥ 190、巡檢 ≥ 100、器具 ≥ 130、碰撞 0、總時間 ≤ 18 分鐘，且注入一次故障後無人碰觸仍能繼續</td></tr>
+<tr><td>映像凍結</td><td>3/7</td><td>比賽映像封存。之後只改參數</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="resource">
+<h2>Resource Planning</h2>
+<p>工作量是內容估算，供給是人數乘上 3.7 個月再乘上投入比例。前版寫過軟體約 61 人週（約 14 人月）。本版把螢幕判讀、故障回復、初審文件與聯跑算進去，軟體為 17.4 人月，另加硬體 6.6、管理 2.4，合計 <b>26.4 人月</b>。</p>
+<div class="scroll"><table>
+<thead><tr><th>工作</th><th class="n">人月</th><th>主要單位</th></tr></thead>
+<tbody>
+<tr><td>架構、安全狀態、開機</td><td class="n">1.2</td><td>廣達</td></tr>
+<tr><td>Nav2、對接、動態障礙</td><td class="n">2.2</td><td>廣達</td></tr>
+<tr><td>65 吋螢幕判讀</td><td class="n">0.8</td><td>廣達</td></tr>
+<tr><td>第一關抽屜、條碼、放置</td><td class="n">2.8</td><td>廣達，指尖由機械配合</td></tr>
+<tr><td>第三關辨識、抓取、尖端朝上</td><td class="n">3.2</td><td>廣達，指尖由機械配合</td></tr>
+<tr><td>第二關四情境與舉證</td><td class="n">2.4</td><td>廣達</td></tr>
+<tr><td>行為樹、恢復、日誌</td><td class="n">1.4</td><td>廣達</td></tr>
+<tr><td>模擬</td><td class="n">1.2</td><td>廣達</td></tr>
+<tr><td>整合、20 分鐘聯跑、影片</td><td class="n">2.2</td><td>全體</td></tr>
+<tr><td>機構設計、桅桿、重心、圖面</td><td class="n">1.6</td><td>長庚機械</td></tr>
+<tr><td>製作、組裝、道具</td><td class="n">2.2</td><td>長庚機械、技術員</td></tr>
+<tr><td>電源、急停、線束、嵌入式</td><td class="n">2.0</td><td>長庚電機、技術員</td></tr>
+<tr><td>感測安裝與標定</td><td class="n">0.8</td><td>電機 + 廣達</td></tr>
+<tr><td>報名、採購、智財、窗口</td><td class="n">1.6</td><td>競賽負責人</td></tr>
+<tr><td>30 頁初審文件</td><td class="n">0.8</td><td>負責人，全體供圖</td></tr>
+<tr><td><b>合計</b></td><td class="n"><b>26.4</b></td><td>工程 24.0，管理 2.4</td></tr>
+</tbody></table></div>
+<div class="scroll"><table>
+<thead><tr><th>情況</th><th>投入假設</th><th class="n">工程供給</th><th class="n">相對 24.0 的缺口</th><th>管理</th></tr></thead>
+<tbody>
+<tr><td>最佳</td><td>廣達與學生約 70%，教授約 20%。其中 1 人改做負責人</td><td class="n">約 27.4</td><td class="n">餘裕約 3.4</td><td>工時夠，機率仍受手臂與一次抓取限制</td></tr>
+<tr><td>期望 · 現況</td><td>廣達 7 人與學生 50%，教授 15%。沒有指定負責人、沒有技術員</td><td class="n">帳面約 21.5，扣掉被採購與初審挪用的約 2 人月後約 19.5</td><td class="n">約 4.5</td><td>沒有主人</td></tr>
+<tr><td>最差</td><td>約 30% 投入，教授約 10%</td><td class="n">約 13.0</td><td class="n">約 11</td><td>三關做不完</td></tr>
+<tr><td>期望 · 改善後</td><td>6 名廣達工程 50%、負責人 50%、學生 50%、教授 15%、技術員全職</td><td class="n">約 23.3</td><td class="n">約 0.7</td><td>負責人約 1.9 人月，對需求 2.4，勉強夠</td></tr>
+</tbody></table></div>
+<p>供給的算法：人數 × 3.7 月 × 比例。期望現況的廣達是 7×3.7×0.5 = 12.95，學生 4×3.7×0.5 = 7.40，教授 2×3.7×0.15 = 1.11，合計 21.46。改善後把 1 名廣達改成負責人，工程端改為 6×3.7×0.5 = 11.10，再加上技術員 3.7，合計 11.10+7.40+1.11+3.7 = 23.31。</p>
+<h3>要不要加人</h3>
+<div class="scroll"><table>
+<thead><tr><th>角色</th><th>結論</th><th>原因</th></tr></thead>
+<tbody>
+<tr><td>電機工程師</td><td>不新增</td><td>張永華教授與兩名學生覆蓋電控設計。缺的是把線做完的工時</td></tr>
+<tr><td>機械工程師</td><td>不新增</td><td>張耀仁教授與兩名學生覆蓋設計。缺的是試作迭代，不是再一張圖</td></tr>
+<tr><td>技術員</td><td>新增 1 名，約 4 個月</td><td>線束、組裝、指尖、道具與 2 分鐘演練都在這個人身上。這是缺口所在</td></tr>
+<tr><td>專案經理</td><td>不另聘。從廣達 7 人指定 1 人，投入約 50%</td><td>採購、初審、主辦窗口與每週門檻需要一個主人。再聘一位會比指派慢</td></tr>
+</tbody></table></div>
+<p>關鍵路徑是初審影片，以及第一關、第三關的一次成功率。導航與開源堆疊不是關鍵路徑的起點，硬體到貨與指尖才是。</p>
+</section>
+
+<section id="budget">
+<h2>Budget Plan</h2>
+<p>三個方案都含運輸保險，因為簡章把設備運送與損壞責任放在隊伍。軟體授權現金為 0，堆疊是開源或 NVIDIA 可免費使用的工具。Claude 費用沿用前版：14 席（4 Premium + 10 Standard）約 4.5 個月、US$3,375，換算 108,000。保守方案只列 4 個席次的規劃值 60,000。人力薪資不在保守與建議方案的現金裡；奪牌配置才把委外技術員列進來。</p>
+<p>第一名獎金 100 萬，低於建議方案的支出。這筆預算買的是整合能力、長庚場域關係，以及得獎後申請 A+ 計畫的資格，不是用獎金回本。</p>
+<div class="scroll"><table>
+<thead><tr><th>項目</th><th class="n">保守</th><th class="n">建議（執行基線）</th><th class="n">奪牌配置</th></tr></thead>
+<tbody>
+<tr><td>硬體</td><td class="n">371,000</td><td class="n">1,059,000</td><td class="n">1,274,000</td></tr>
+<tr><td>軟體授權</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td>Claude</td><td class="n">60,000</td><td class="n">108,000</td><td class="n">148,000</td></tr>
+<tr><td>製作與道具</td><td class="n">80,000</td><td class="n">140,000</td><td class="n">210,000</td></tr>
+<tr><td>測試設備</td><td class="n">15,000</td><td class="n">25,000</td><td class="n">105,000</td></tr>
+<tr><td>差旅與運輸保險</td><td class="n">90,000</td><td class="n">145,000</td><td class="n">185,000</td></tr>
+<tr><td>委外技術員 4 個月</td><td class="n">0</td><td class="n">0</td><td class="n">240,000</td></tr>
+<tr><td>小計</td><td class="n">616,000</td><td class="n">1,477,000</td><td class="n">2,162,000</td></tr>
+<tr><td>預備金</td><td class="n">61,600（10%）</td><td class="n">221,550（15%）</td><td class="n">259,440（12%）</td></tr>
+<tr><td><b>合計</b></td><td class="n"><b>677,600</b></td><td class="n"><b>1,698,550</b></td><td class="n"><b>2,421,440</b></td></tr>
+</tbody></table></div>
+<div class="grid3">
+<article class="card"><h3>保守 · 低於 100 萬</h3><p>合計 <b>677,600</b>。前提是移動平台用廣達既有設備或贊助，不新購。硬體 371,000 的內容是：手臂運費 20,000、平台改裝 80,000、Orin 開發套件 70,000、LiDAR 一台 53,000、D455 一台 20,000、原廠夾爪與指尖 25,000、螢幕 8,000、電池 35,000、逆變器 15,000、急停 25,000、線材 12,000、交換器 8,000。製作 80,000 是結構 40,000 加道具 40,000。目標是三關都有分數並進入決賽。</p><p>平台若必須以 30 萬新購，小計變成 916,000，加 10% 預備金為 <b>1,007,600</b>，會碰到 100 萬上限。那種情況不採用保守方案。</p></article>
+<article class="card"><h3>建議 · 100–200 萬</h3><p>合計 <b>1,698,550</b>。這是請主管核定的執行基線。含借用手臂的運費、平台估算 30 萬、研華 MIC-733、先到的 Orin 開發套件、前後 LiDAR、兩台 D455、Robotiq 2F-85、自製指尖、安全回路、道具、10 人高雄差旅與保險、14 席 Claude。</p><p>技術員若內部支援，改善方案再加備用電池與相機約 65,000，現金約 <b>176 萬</b>。技術員若委外 24 萬，現金約 <b>200 萬</b>。</p></article>
+<article class="card"><h3>奪牌配置 · 300 萬以內</h3><p>合計 <b>2,421,440</b>。在建議方案上增加 SICK 感測、第二組電池、備用相機、第二急停站、備用指尖組、GPU 工作站、較完整的場地道具、較高的差旅與 Claude API，以及委外技術員。</p><p>達明若借不到，手臂購置準備金 <b>900,000</b> 不疊加在這張表上。動用時取消委外技術員、SICK 與 GPU 工作站共 410,000，新小計 2,652,000，12% 預備金後約 <b>2,970,000</b>。準備金與全套奪牌硬體同時保留會到約 332 萬，超過 cap。</p></article>
+</div>
+<h3>建議方案 BOM</h3>
+<p class="mut">等級：Must 在建議方案內。Nice 與 Optional 不在 1,698,550 裡。交期與單價是規劃值，下單前改成報價單。</p>
+<div class="scroll"><table>
+<thead><tr><th>品項</th><th>料號／型號</th><th>製造商</th><th>產地</th><th>交期</th><th class="n">單價</th><th class="n">數量</th><th class="n">金額</th><th>等級</th></tr></thead>
+<tbody>
+<tr><td>協作手臂借用</td><td>TM5-900，AC 版，含控制箱與內建相機</td><td>達明 Techman</td><td>台灣</td><td>報名後申請，名額有限</td><td class="n">0</td><td class="n">1</td><td class="n">0</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>手臂運費與保險</td><td>依借用合約</td><td>—</td><td>—</td><td>2–3 週</td><td class="n">30,000</td><td class="n">1</td><td class="n">30,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>移動平台</td><td>AMR50-BASE 或同等，須過重量門檻</td><td>威剛 ADATA 或同等台灣廠</td><td>台灣</td><td>待報價</td><td class="n">300,000</td><td class="n">1</td><td class="n">300,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>比賽電腦</td><td>MIC-733-AO5A1（Jetson AGX Orin 32GB）</td><td>研華 Advantech；模組 NVIDIA</td><td>台灣／美國</td><td>同系列曾見約 11 週，立即確認</td><td class="n">170,000</td><td class="n">1</td><td class="n">170,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>軟體橋接電腦</td><td>Jetson AGX Orin 開發套件</td><td>NVIDIA</td><td>美國</td><td>2–4 週</td><td class="n">70,000</td><td class="n">1</td><td class="n">70,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>2D LiDAR</td><td>UST-10LX</td><td>Hokuyo</td><td>日本</td><td>4–8 週</td><td class="n">53,000</td><td class="n">2</td><td class="n">106,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>深度相機</td><td>RealSense D455。禁止 D455f</td><td>Intel</td><td>美國設計，組裝常見泰國</td><td>2–4 週</td><td class="n">20,000</td><td class="n">2</td><td class="n">40,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>夾爪</td><td>2F-85</td><td>Robotiq</td><td>加拿大</td><td>3–6 週</td><td class="n">186,000</td><td class="n">1</td><td class="n">186,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>抽屜鉤與指尖</td><td>自製三套</td><td>長庚大學</td><td>台灣</td><td>持續迭代</td><td class="n">20,000</td><td class="n">1</td><td class="n">20,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>本體螢幕與音訊</td><td>10 吋等級，採購時核產地</td><td>避開受限來源</td><td>下單時確認</td><td>1–2 週</td><td class="n">12,000</td><td class="n">1</td><td class="n">12,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>電池</td><td>24V LiFePO4，約 30Ah，電芯日韓、台灣組裝</td><td>可出具產地者</td><td>台灣／日本／韓國</td><td>3–6 週</td><td class="n">45,000</td><td class="n">1</td><td class="n">45,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>逆變器</td><td>1 kW 純正弦。借到 DC 手臂則刪除</td><td>Cotek 立德或同等</td><td>台灣</td><td>1–3 週</td><td class="n">15,000</td><td class="n">1</td><td class="n">15,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>安全回路</td><td>PNOZ s 系列代表 PNOZ s4，加蘑菇頭</td><td>Pilz；按鈕可用 IDEC</td><td>德國／日本</td><td>1–3 週</td><td class="n">35,000</td><td class="n">1</td><td class="n">35,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>電源與線束材料</td><td>DC-DC、保險絲、連接器</td><td>Mean Well 等</td><td>台灣</td><td>1–2 週</td><td class="n">18,000</td><td class="n">1</td><td class="n">18,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>交換器</td><td>EDS-2005-EL 或同等</td><td>Moxa</td><td>台灣</td><td>1–3 週</td><td class="n">12,000</td><td class="n">1</td><td class="n">12,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>結構件</td><td>鋁擠、甲板、蓋板、列印件</td><td>長庚大學</td><td>台灣</td><td>3–5 週</td><td class="n">80,000</td><td class="n">1</td><td class="n">80,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>道具</td><td>藥車、床旁櫃、器具桌、按鈕、假人</td><td>長庚大學</td><td>台灣</td><td>3–6 週</td><td class="n">60,000</td><td class="n">1</td><td class="n">60,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>測試儀器</td><td>磅秤、功率計、標定治具</td><td>—</td><td>下單時確認</td><td>1–2 週</td><td class="n">25,000</td><td class="n">1</td><td class="n">25,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>差旅</td><td>高雄，約 10 人含彩排</td><td>—</td><td>—</td><td>3 月</td><td class="n">120,000</td><td class="n">1</td><td class="n">120,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>運輸保險</td><td>手臂與整機往返</td><td>—</td><td>—</td><td>出貨前</td><td class="n">25,000</td><td class="n">1</td><td class="n">25,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>Claude Team</td><td>4 Premium + 10 Standard，約 4.5 個月</td><td>Anthropic</td><td>美國</td><td>既有流程</td><td class="n">108,000</td><td class="n">1</td><td class="n">108,000</td><td><span class="tag must">Must</span></td></tr>
+<tr><td>備用電池</td><td>與主電池同規格</td><td>同主電池</td><td>同主電池</td><td>3–6 週</td><td class="n">45,000</td><td class="n">1</td><td class="n">45,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>備用指尖組</td><td>抽屜鉤與尖端朝上指尖的替換組</td><td>長庚大學</td><td>台灣</td><td>迭代期間</td><td class="n">40,000</td><td class="n">1</td><td class="n">40,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>備用 D455</td><td>D455</td><td>Intel</td><td>同主相機</td><td>2–4 週</td><td class="n">20,000</td><td class="n">1</td><td class="n">20,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>安全掃描器</td><td>TiM 或同等，型號待選</td><td>SICK</td><td>德國</td><td>4–8 週</td><td class="n">90,000</td><td class="n">1</td><td class="n">90,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>GPU 工作站</td><td>訓練與 Isaac Sim</td><td>避開受限整機</td><td>下單時確認</td><td>2–4 週</td><td class="n">80,000</td><td class="n">1</td><td class="n">80,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>第二急停站</td><td>與主回路同系列</td><td>Pilz／IDEC</td><td>德國／日本</td><td>1–3 週</td><td class="n">20,000</td><td class="n">1</td><td class="n">20,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>委外技術員</td><td>4 個月</td><td>—</td><td>台灣</td><td>12 月到位</td><td class="n">240,000</td><td class="n">1</td><td class="n">240,000</td><td><span class="tag nice">Nice</span></td></tr>
+<tr><td>手臂購置準備金</td><td>TM5-900 若借用失敗</td><td>達明</td><td>台灣</td><td>須立即詢價</td><td class="n">900,000</td><td class="n">1</td><td class="n">900,000</td><td><span class="tag opt">Optional</span></td></tr>
+<tr><td>腕部力感測</td><td>待 Robotiq 報價，不進入三方案合計</td><td>Robotiq</td><td>加拿大</td><td>待報價</td><td class="n">待報價</td><td class="n">0</td><td class="n">0</td><td><span class="tag opt">Optional</span></td></tr>
+</tbody></table></div>
+<p>建議方案 Must 列的合計是 30,000+300,000+170,000+70,000+106,000+40,000+186,000+20,000+12,000+45,000+15,000+35,000+18,000+12,000+80,000+60,000+25,000+120,000+25,000+108,000 = 1,477,000，加 15% 為 1,698,550。MIC-733 的 170,000 來自前版 CDW 約 US$5,288。LiDAR 的 53,000 來自前版 US$1,670。夾爪的 186,000 來自前版 US$5,825。平台 300,000 仍是未公開價格的暫估。</p>
+<p>奪牌配置是建議方案小計 1,477,000，再加備用電池 45,000、備用 D455 20,000、備用指尖 40,000、SICK 90,000、第二急停站 20,000、追加加工 30,000、道具加做 40,000、GPU 工作站 80,000、差旅追加 40,000、Claude API 40,000、委外技術員 240,000，合計 2,162,000，再加 12% 預備金。</p>
+</section>
+
+<section id="risk">
+<h2>Risk Assessment</h2>
+<p>機率與衝擊都用高、中、低。高衝擊且高可能性的項目決定這週的動作。</p>
+<div class="scroll"><table>
+<thead><tr><th>編號</th><th>類別</th><th>風險</th><th>可能性</th><th>衝擊</th><th>緩解</th></tr></thead>
+<tbody>
+<tr><td>T1</td><td>技術</td><td>平台自重或載重讓整機超過 120 kg，或上裝超過平台載重</td><td class="hi">高</td><td class="hi">高</td><td>規格書門檻。未過不下單。優先問 DC 版手臂，以便拿掉逆變器</td></tr>
+<tr><td>T2</td><td>技術</td><td>抽屜與器具第一次抓取不穩。掉落不能重試</td><td class="hi">高</td><td class="hi">高</td><td>指尖每週一版。1 月底抽屜循環 ≥ 90%。這是技術員要加進來的原因</td></tr>
+<tr><td>T3</td><td>技術</td><td>達明驅動與 MoveIt 2 版本不合</td><td class="md">中</td><td class="md">中</td><td>11 月鎖 commit，用開發套件先跑通</td></tr>
+<tr><td>T4</td><td>技術</td><td>假人讓姿態模型失效；320×240 心跳誤讀</td><td class="md">中</td><td class="md">中</td><td>床面佔用與數字模板為主路徑。11 月就用假人與同型監視器試</td></tr>
+<tr><td>T5</td><td>技術</td><td>手臂全伸時急停，重心出支撐面</td><td class="lo">低</td><td class="hi">高</td><td>後甲板配重。整機後做伸出急停。任務中限制全伸速度</td></tr>
+<tr><td>S1</td><td>時程</td><td>初審截止若仍卡在 12 月中，最終機器來不及入鏡</td><td class="md">中</td><td class="hi">高</td><td>12/14 用任何可動的平台拍實機。本週確認日期</td></tr>
+<tr><td>S2</td><td>時程</td><td>MIC-733 交期長到 1 月以後</td><td class="hi">高</td><td class="hi">高</td><td>開發套件列入建議方案的 Must，軟體不等工控機</td></tr>
+<tr><td>S3</td><td>時程</td><td>2/6 起春節，整合週被切開</td><td class="hi">高</td><td class="md">中</td><td>2/5 功能凍結。假期只修缺陷</td></tr>
+<tr><td>S4</td><td>時程</td><td>LiDAR 4–8 週，卡住導航</td><td class="md">中</td><td class="hi">高</td><td>本週下單。最壞時先用一顆完成導航，第二顆補後方</td></tr>
+<tr><td>C1</td><td>供應鏈</td><td>達明借用失敗</td><td class="md">中</td><td class="hi">高</td><td>本週申請。90 萬準備金與刪減清單先寫好，不預先採購</td></tr>
+<tr><td>C2</td><td>供應鏈</td><td>電池或相機買到無法說明產地的版本</td><td class="md">中</td><td class="hi">高</td><td>採購單寫明電芯產地與 D455（非 D455f）。核心元件都留產地欄</td></tr>
+<tr><td>C3</td><td>供應鏈</td><td>受限來源在檢錄才被發現</td><td class="lo">低</td><td class="hi">高</td><td>負責人在每張核心採購單簽名。一般螺絲不向下追溯</td></tr>
+<tr><td>M1</td><td>競賽</td><td>主辦在賽前調整任務細節</td><td class="hi">高</td><td class="md">中</td><td>行為樹用參數。幾何尺寸放設定檔。有人每週看公告</td></tr>
+<tr><td>M2</td><td>競賽</td><td>場上有人碰機器人，該關 0 分</td><td class="md">中</td><td class="hi">高</td><td>自恢復演練。場邊人員事先講好手不碰機器</td></tr>
+<tr><td>M3</td><td>競賽</td><td>碰撞吃掉安全分，或裁判因安全中止</td><td class="hi">高</td><td class="md">中</td><td>0.6 m/s。人型障礙與輪椅的膨脹區從 12 月就放進模擬</td></tr>
+<tr><td>M4</td><td>競賽</td><td>第一年就有產業隊伍，贊助廠也可能是對手或支援其他隊</td><td class="md">中</td><td class="hi">高</td><td>分數策略押在乾淨的三關完成，不押單一感測器規格</td></tr>
+<tr><td>M5</td><td>競賽</td><td>高雄現場光線與實驗室不同</td><td class="md">中</td><td class="md">中</td><td>曝光鎖定。3/8–3/10 場測只做環境差，不做新功能</td></tr>
+</tbody></table></div>
+<h3>Risk Matrix</h3>
+<div class="scroll"><table>
+<thead><tr><th>可能性 ＼ 衝擊</th><th>低</th><th>中</th><th>高</th></tr></thead>
+<tbody>
+<tr><td>高</td><td></td><td>S3 春節、M3 碰撞</td><td>T1 重量、T2 一次抓取、S2 電腦交期</td></tr>
+<tr><td>中</td><td></td><td>T3 軟體版本、T4 視覺、M5 光線</td><td>S1 初審、S4 LiDAR、C1 借用、C2 產地、M2 人碰機器、M4 對手</td></tr>
+<tr><td>低</td><td></td><td></td><td>T5 翻覆、C3 檢錄失格</td></tr>
+</tbody></table></div>
+<p>右上角三項的負責人動作：本週拿平台規格書、本週申請手臂、本週下 Orin 開發套件。一次抓取從 12 月起每週有實體次數，不等模擬。</p>
+</section>
+
+<section id="success">
+<h2>Success Criteria</h2>
+<div class="scroll"><table>
+<thead><tr><th>時間</th><th>標準</th></tr></thead>
+<tbody>
+<tr><td>2026/11/16</td><td>完成報名。達明借用已申請。智財原則已簽。平台規格書已索取</td></tr>
+<tr><td>2026/12/14</td><td>初審文件與實機影片完成。核心採購單都有產地欄</td></tr>
+<tr><td>平台到貨後</td><td>上磅 ≤ 110 kg。急停在檢錄條件下可示範，動力切斷、電腦留紀錄</td></tr>
+<tr><td>2027/1/31</td><td>藥車抽屜循環一次成功率 ≥ 90%。床旁櫃放置落在區域線內的比例 ≥ 90%</td></tr>
+<tr><td>2027/2/5</td><td>三關都有得分路徑。功能凍結</td></tr>
+<tr><td>2027/3/1</td><td>連續三次：給藥 ≥ 190/220、巡檢 ≥ 100/130、器具 ≥ 130/170、碰撞 0、全程 ≤ 18 分鐘、注入一次故障後無人碰觸</td></tr>
+<tr><td>2027/3/11</td><td>三關都有分數，取得龍騰獎評選資格。名次目標為前三</td></tr>
+</tbody></table></div>
+<p>未達 3/1 門檻時，負責人在 3/2 提出縮減：保第一關與第三關的基本分，第二關至少完成按鈕、病人服與一項生命徵象，避免任何一關是 0 分。速度不再提高。</p>
+</section>
+
+<section id="biz">
+<h2>Future Commercialization Potential</h2>
+<p>競賽機器不是醫療器材。商業化時，藥物與生命徵象都維持「協助護理人員」的定位：核對、送到床旁線內、把巡檢結果報給人。給藥行為本身是護理業務，這台機器不取代給藥判斷。</p>
+<div class="scroll"><table>
+<thead><tr><th>時間</th><th>內容</th><th>決策</th></tr></thead>
+<tbody>
+<tr><td>2027 上半年</td><td>用 TRC 證明移動、辨識、取放與安全可以接在同一台機器上</td><td>是否進入病房旁路測試</td></tr>
+<tr><td>2027 下半年</td><td>在長庚體系一間非臨床動線做旁路：巡房提醒、物資送到定點、器具清點輔助。人不把臨床決策交給機器</td><td>護理接受度與故障率</td></tr>
+<tr><td>2027 年底</td><td>決定繼續當研究平台，或整理成可報價的試點</td><td>廣達是否以邊緣 AI 與系統整合為產品主人</td></tr>
+<tr><td>2028</td><td>若 2027 得獎，依簡章可優先申請 A+ 企業創新研發淬鍊計畫的相關主題。實際準駁看該計畫公告</td><td>是否提出 A+</td></tr>
+</tbody></table></div>
+<p>廣達留下的是任務軟體、邊緣運算與系統整合。長庚留下臨床流程與機構迭代。這個分工和競賽相同，所以產學協議要在報名前簽，避免賽後才討論誰能賣。</p>
+<p>TFDA 與醫療器材分類不在這次競賽範圍。若日後要讀取生命徵象並呈現給臨床，先由法規單位判斷。在那之前，對外說法停在物流輔助與巡房提醒。</p>
+</section>
+
+<section id="prob">
+<h2>前三名機率</h2>
+<p>以取得前三名為目標，<b>現有 14 人、期望投入（廣達與學生約五成、教授約 15%）、建議方案硬體、手臂借用成功、沒有技術員、沒有指定負責人，規劃判斷是 48%。</b> 低於 70%。</p>
+<p>48% 的組成：廣達的軟體深度、長庚的道具與臨床距離、成熟開源、以及已經對上的分數表，讓完賽並拿分是做得到的。把它壓住的是 3.7 個月、約 4.5 人月的工程缺口、抽屜與器具的一次成功率、平台重量尚未證實、初審影片可能早於全機、以及場上禁止人碰機器。最佳情況把投入拉到約七成、硬體準時，工時會有餘裕，前三名約 <b>65%</b>，仍然低於 70%，因為試作與線束沒有全職人手。最差情況約三成投入，或手臂借不到又沒有準備金，約 <b>20%</b>，連三關都有分數都不穩。</p>
+<div class="prob"><span>現況期望</span><div class="bar" style="flex:1"><i style="width:48%"></i></div><b>48%</b></div>
+<div class="prob"><span>最佳情況</span><div class="bar" style="flex:1"><i style="width:65%"></i></div><b>65%</b></div>
+<div class="prob"><span>最差情況</span><div class="bar" style="flex:1"><i style="width:20%"></i></div><b>20%</b></div>
+<div class="prob"><span>改善之後</span><div class="bar" style="flex:1"><i style="width:72%;background:#0e7a3d"></i></div><b>72%</b></div>
+<p class="mut">這些百分比是給主管取捨用的規劃判斷，不是統計模型的輸出。它們會被 11 月的借用結果與平台規格書改寫。</p>
+<div class="okbox">
+<h3>最佳改善方案</h3>
+<p>不加電機工程師，不加機械工程師，不為了機率購買第二套手臂。做四件事。</p>
+<p>第一，從現有廣達 7 人指定競賽負責人，建議洪士軒，約 50% 投入。第二，增加 1 名技術員到 2027/3，專做線束、組裝、指尖與維修演練。第三，在建議方案上只加一組備用電池與一台備用 D455，約 65,000，讓練習日與相機故障不會中斷迭代。第四，從 1 月起每週用分數表打全流程，3/1 前連續三次達標，否則縮減範圍以保住三關都有分數。</p>
+<p>現金：內部技術員約 <b>176 萬</b>（建議方案 1,698,550 加備品 65,000）。委外技術員再加 240,000，約 <b>200 萬</b>。改善後的期望判斷是 <b>72%</b>。完整奪牌配置的 242 萬買的是較多備援與訓練工作站，對機率的幫助小於這名技術員。</p>
+</div>
+<h3>Final Deliverables · 本文件對照</h3>
+<div class="scroll"><table>
+<thead><tr><th>主管要求的產出</th><th>位置</th></tr></thead>
+<tbody>
+<tr><td>Executive presentation</td><td>文首與 Executive Summary</td></tr>
+<tr><td>Detailed engineering plan</td><td>得獎策略、技術架構、Medical Explorer、開源</td></tr>
+<tr><td>Gantt chart</td><td>Development Schedule</td></tr>
+<tr><td>Organization chart</td><td>Team Organization</td></tr>
+<tr><td>BOM table</td><td>Budget Plan</td></tr>
+<tr><td>CAD concept</td><td>3D 模型與機械配置圖。瀏覽器開啟可旋轉。這是概念包絡，不是加工圖</td></tr>
+<tr><td>Wiring diagram</td><td>電源架構圖與線路表</td></tr>
+<tr><td>Success probability</td><td>本節</td></tr>
+</tbody></table></div>
 </section>
 </main>
+<footer>
+內部文件，供廣達主管審查。概念質量、交期與金額在報價單取代前都是規劃值。醫療組手冊為限閱資料，任務若改版，以主辦公告為準。3D 模型沿用前版概念機構，並標成 Medical Explorer。
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
-var tabs=document.querySelectorAll('#tabs button');
-tabs.forEach(function(b){b.onclick=function(){tabs.forEach(function(x){x.classList.toggle('on',x===b)});document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===b.dataset.t)});if(b.dataset.t==='a')resize()}});
+var g=[
+['報名、借用、智財','111100000000000000'],
+['模擬與介面凍結','011110000000000000'],
+['初審文件與實機影片','001111000000000000'],
+['機構與線束','001111110000000000'],
+['平台、手臂、感測整合','000001111100000000'],
+['第一關給藥','000000001111000000'],
+['第三關器具','000000000111110000'],
+['第二關巡檢與按鈕','000000000001111000'],
+['春節只修缺陷','000000000000010000'],
+['20 分鐘聯跑','000000000000001110'],
+['高雄場測與決賽','000000000000000001']
+];
+var tb=document.getElementById('gantt');
+g.forEach(function(r){
+var h='<tr><td style="text-align:left;white-space:nowrap">'+r[0]+'</td>';
+for(var i=0;i<18;i++){
+var c=r[1][i]==='1'?(r[0].indexOf('春節')===0?'hold':(r[0].indexOf('決賽')>0&&i===17?'gate':'on')):'';
+h+='<td class="'+c+'"></td>';
+}
+tb.insertAdjacentHTML('beforeend',h+'</tr>');
+});
 
-/* BOM */
-var rows=[
-['手臂','Techman TM5-900（AC 版，含控制箱與內建相機）',1,0,'達明借用方案；控制箱約 13.5 kg','借用'],
-['底盤','ADATA AMR50-BASE 空機平台（載重 50 kg，1 m/s）',1,300000,'價格未公開，暫估','待報價'],
-['運算','Advantech MIC-733-AO5A1（Jetson AGX Orin 32G）',1,170000,'CDW 約 US$5,288；MIC-732D 約 11 週交期','查價'],
-['感測','Hokuyo UST-10LX 2D LiDAR（日本製，前後各一）',2,53000,'US$1,670（Acroname）；部分通路交期長','查價'],
-['感測','RealSense D455（產地 TH；勿買 D455f，產地 CN）',2,20000,'MSRP 約 US$419，通路價較高','查價'],
-['末端','Robotiq 2F-85 夾爪（加拿大）＋客製指尖／抽屜鉤',1,186000,'US$5,825','查價'],
-['人機','10 吋螢幕＋USB 喇叭／麥克風',1,8000,'估算','估算'],
-['機構','鋁擠立柱、底座、蓋板、3D 列印件、五金',1,55000,'估算','估算'],
-['電源','24V LiFePO4 30Ah 電池',1,25000,'估算','估算'],
-['電源','1 kW 純正弦逆變器（TM5 借用機為 AC 版）',1,12000,'估算','估算'],
-['安全','E-stop 蘑菇頭＋安全繼電器',1,10000,'估算','估算'],
-['電氣','線材、保險絲、DC-DC、連接器',1,10000,'估算','估算'],
-['網路','工業乙太網路交換器',1,5000,'估算','估算']];
-var tb=document.querySelector('#bom tbody'),sum=0,f=function(n){return n.toLocaleString('en-US')};
-rows.forEach(function(r){var s=r[2]*r[3];sum+=s;var tr=document.createElement('tr');tr.innerHTML='<td>'+r[0]+'</td><td>'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+f(r[3])+'</td><td class="n">'+f(s)+'</td><td>'+r[4]+'</td><td>'+r[5]+'</td>';tb.appendChild(tr)});
-var cont=Math.round(sum*0.15),prop=60000,ws=80000,cl=108000;
-var tf=document.querySelector('#bom tfoot');
-[['機器人本體小計',sum],['預備金 15%',cont],['機器人本體合計',sum+cont],['測試道具（藥車、床旁櫃、器具、按鈕面板模擬）',prop],['訓練用 GPU 工作站（選配）',ws],['Claude Team：4 Premium＋10 Standard 共 14 席，月繳約 4.5 個月（US$3,375）',cl],['全案合計',sum+cont+prop+ws+cl]].forEach(function(x,i){var tr=document.createElement('tr');tr.innerHTML='<td colspan="4"><b>'+x[0]+'</b></td><td class="n"><b>'+f(x[1])+'</b></td><td colspan="2"></td>';tf.appendChild(tr)});
-
-/* Timeline */
-var tl=[['11/10–11/16','報名（延長至 11/16）；聯絡達明、威剛／研華、台達；確認企業資格','報名後才能申請借用，名額先到先得'],
-['11/17–12/7','CAD 定案、下單、到貨；ROS 2 與主辦方提供的場地 URDF 模擬環境','LiDAR、相機、Orin 的交期與缺貨'],
-['12/8–1/4','底盤＋Orin＋LiDAR 整機能跑；準備初審書面（30 頁，需實機照片／影片）','初審時硬體不足以拍出實機'],
-['1/5–2/1','第 1 關與第 3 關 MVP：導航、ArUco、抽屜拉取、器具夾取','夾爪指尖與抽屜鉤需反覆試作'],
-['2/2–2/22','第 2 關視覺（離床、跌落、心跳、點滴、病人服）與跨樓層按鈕','春節假期（約 2 月上旬）影響進度'],
-['2/23–3/8','三關連跑 20 分鐘、重量／E-stop 檢錄、備品','總重逼近 120 kg 上限'],
-['3/9–3/15','賽前場域測試（賽前一週開放）、版本凍結','現場光線與場景與實驗室不同']];
-document.getElementById('tl').innerHTML=tl.map(function(r){return '<tr><td style="white-space:nowrap">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join('');
-
-/* Wiring */
-var wr=[['主電源','24V 電池 → 保險絲 → 安全繼電器 → 底盤驅動／逆變器／DC-DC','E-stop 須以硬體切斷動力，不得僅靠軟體'],
-['手臂電源','逆變器（AC）→ TM5 控制箱 → 手臂','借用機為 AC 版；控制箱的外部安全輸入接 E-stop'],
-['運算電源','24V → DC-DC → MIC-733（Orin）','須確認 MIC-733 的 DC 輸入範圍'],
-['LiDAR','24V → UST-10LX；乙太網路 → 交換器','前後各一，支援 12／24V'],
-['相機','D455 ×2 → USB3 → Orin','建議用主動式 USB3 線並固定線纜'],
-['手臂通訊','交換器 ↔ TM 控制箱（乙太網路）','TMflow 與 ROS 驅動二擇一，早期就定案'],
-['夾爪','TM 控制箱末端 24V／RS-485 → 2F-85','2F-85 供電 24V、約 0.8 A'],
-['人機','Orin → HDMI 螢幕；USB 喇叭','競賽期間不得外部連線，開發網路與比賽網路分開']];
-document.getElementById('wr').innerHTML=wr.map(function(r){return '<tr><td style="white-space:nowrap">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join('');
-
-/* 3D */
-var T=THREE,el=document.getElementById('cv'),scene=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50);
+var T=THREE,el=document.getElementById('cv');
+if(!el||typeof T==='undefined')return;
+var scene=new T.Scene(),cam=new T.PerspectiveCamera(40,1,.1,50);
 var rd=new T.WebGLRenderer({antialias:true,alpha:true});el.appendChild(rd.domElement);
-scene.add(new T.AmbientLight(0xffffff,.75));var dl=new T.DirectionalLight(0xffffff,.7);dl.position.set(2,4,3);scene.add(dl);
+scene.add(new T.AmbientLight(0xffffff,.75));
+var dl=new T.DirectionalLight(0xffffff,.7);dl.position.set(2,4,3);scene.add(dl);
 scene.add(new T.GridHelper(4,16,0x8a8f99,0xb9bdc6));
 var R=new T.Group();scene.add(R);
 function mat(c,o){return new T.MeshLambertMaterial(o?{color:c,transparent:true,opacity:o}:{color:c})}
 function box(w,h,d,c,x,y,z,p,o){var m=new T.Mesh(new T.BoxGeometry(w,h,d),mat(c,o));m.position.set(x,y,z);(p||R).add(m);return m}
 function cyl(r,h,c,x,y,z,p,rx){var m=new T.Mesh(new T.CylinderGeometry(r,r,h,24),mat(c));m.position.set(x,y,z);if(rx)m.rotation.x=Math.PI/2;(p||R).add(m);return m}
-box(.6,.27,.75,0x56627a,0,.165,0);box(.6,.02,.75,0x2e3542,0,.31,0);
+box(.6,.27,.75,0x56627a,0,.165,0);
+box(.6,.02,.75,0x2e3542,0,.31,0);
 box(.455,.23,.305,0x8a93a3,0,.425,-.22);
 box(.3,.54,.3,0xaab4c2,0,.58,.08);
 cyl(.035,.03,0xdc2626,0,.75,-.075,R,true).position.z=-.085;
-box(.05,.07,.05,0xf59e0b,0,.345,.33);box(.05,.07,.05,0xf59e0b,0,.345,-.33);
-box(.05,1.24,.05,0x4b5563,-.25,.93,.3);box(.26,.17,.02,0x111827,-.25,1.12,.335);box(.12,.03,.04,0x1f2937,-.25,1.56,.3);
+box(.05,.07,.05,0xf59e0b,0,.345,.33);
+box(.05,.07,.05,0xf59e0b,0,.345,-.33);
+box(.05,1.24,.05,0x4b5563,-.25,.93,.3);
+box(.26,.17,.02,0x111827,-.25,1.12,.335);
+box(.12,.03,.04,0x1f2937,-.25,1.56,.3);
 var sh=new T.Group();sh.position.set(0,.99,.08);R.add(sh);
 cyl(.075,.28,0x3b82f6,0,-.14,0,sh);
 var a2=new T.Group();sh.add(a2);box(.1,.43,.1,0xe5e7eb,0,.215,0,a2);
 var a3=new T.Group();a3.position.y=.43;a2.add(a3);box(.09,.4,.09,0xd1d5db,0,.2,0,a3);
-var a4=new T.Group();a4.position.y=.4;a3.add(a4);box(.08,.1,.08,0x3b82f6,0,.05,0,a4);box(.07,.1,.05,0x1f2937,0,.15,0,a4);box(.012,.08,.03,0x9ca3af,-.03,.22,0,a4);box(.012,.08,.03,0x9ca3af,.03,.22,0,a4);
-var env=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(.65,1.75,.8)),new T.LineBasicMaterial({color:0xf59e0b}));env.position.set(0,.875,0);scene.add(env);
+var a4=new T.Group();a4.position.y=.4;a3.add(a4);
+box(.08,.1,.08,0x3b82f6,0,.05,0,a4);
+box(.07,.1,.05,0x1f2937,0,.15,0,a4);
+box(.012,.08,.03,0x9ca3af,-.03,.22,0,a4);
+box(.012,.08,.03,0x9ca3af,.03,.22,0,a4);
+var env=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(.65,1.75,.8)),new T.LineBasicMaterial({color:0xf59e0b}));
+env.position.set(0,.875,0);scene.add(env);
 var poses={'收納':[0,2.9,0],'藥車抽屜':[1.9,-.33,0],'器具桌':[.9,.8,1.44]};
 function tip(p){var c1=p[0],c2=p[0]+p[1],c3=c2+p[2];return{z:.08+.43*Math.sin(c1)+.4*Math.sin(c2)+.26*Math.sin(c3),y:.99+.43*Math.cos(c1)+.4*Math.cos(c2)+.26*Math.cos(c3)}}
 var cart=new T.Group(),tbl=new T.Group();scene.add(cart);scene.add(tbl);
-(function(){var t=tip(poses['藥車抽屜']);box(.65,1.09,.44,0x22c55e,0,.545,t.z+.22,cart,.3);
-var u=tip(poses['器具桌']);box(.7,.03,.5,0x22c55e,0,u.y-.015,u.z,tbl,.4);box(.06,u.y-.03,.06,0x22c55e,0,(u.y-.03)/2,u.z,tbl,.4)})();
+(function(){
+var t=tip(poses['藥車抽屜']);
+box(.65,1.09,.44,0x22c55e,0,.545,t.z+.22,cart,.3);
+var u=tip(poses['器具桌']);
+box(.7,.03,.5,0x22c55e,0,u.y-.015,u.z,tbl,.4);
+box(.06,u.y-.03,.06,0x22c55e,0,(u.y-.03)/2,u.z,tbl,.4);
+})();
 var cur=poses['收納'].slice(),tgt=cur.slice();
 var pb=document.getElementById('poses');
-Object.keys(poses).forEach(function(k,i){var b=document.createElement('button');b.textContent=k;if(i===0)b.className='on';b.onclick=function(){tgt=poses[k].slice();cart.visible=(k==='藥車抽屜');tbl.visible=(k==='器具桌');pb.querySelectorAll('button').forEach(function(x){x.className=x===b?'on':''})};pb.appendChild(b)});
+Object.keys(poses).forEach(function(k,i){
+var b=document.createElement('button');b.type='button';b.textContent=k;if(i===0)b.className='on';
+b.onclick=function(){tgt=poses[k].slice();cart.visible=(k==='藥車抽屜');tbl.visible=(k==='器具桌');pb.querySelectorAll('button').forEach(function(x){x.className=x===b?'on':''})};
+pb.appendChild(b);
+});
 cart.visible=false;tbl.visible=false;
 document.getElementById('env').onclick=function(){env.visible=!env.visible;this.classList.toggle('on',env.visible)};
 var th=.9,ph=1.2,rad=3.3,drag=null;
@@ -208,10 +739,13 @@ el.addEventListener('pointerdown',function(e){drag=[e.clientX,e.clientY];el.setP
 el.addEventListener('pointerup',function(){drag=null});
 el.addEventListener('pointermove',function(e){if(!drag)return;th-=(e.clientX-drag[0])*.008;ph=Math.max(.2,Math.min(1.5,ph-(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]});
 el.addEventListener('wheel',function(e){e.preventDefault();rad=Math.max(1.5,Math.min(7,rad*(e.deltaY>0?1.08:.92)))},{passive:false});
-function resize(){var w=el.clientWidth||600;rd.setSize(w,440,false);cam.aspect=w/440;cam.updateProjectionMatrix()}
+function resize(){var w=el.clientWidth||600,h=el.clientHeight||460;rd.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
 window.addEventListener('resize',resize);resize();
-(function loop(){requestAnimationFrame(loop);for(var i=0;i<3;i++)cur[i]+=(tgt[i]-cur[i])*.08;a2.rotation.x=cur[0];a3.rotation.x=cur[1];a4.rotation.x=cur[2];
-cam.position.set(rad*Math.sin(ph)*Math.sin(th),.8+rad*Math.cos(ph),.3+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(0,.8,.3);rd.render(scene,cam)})();
+(function loop(){requestAnimationFrame(loop);
+for(var i=0;i<3;i++)cur[i]+=(tgt[i]-cur[i])*.08;
+a2.rotation.x=cur[0];a3.rotation.x=cur[1];a4.rotation.x=cur[2];
+cam.position.set(rad*Math.sin(ph)*Math.sin(th),.8+rad*Math.cos(ph),.3+rad*Math.sin(ph)*Math.cos(th));
+cam.lookAt(0,.8,.3);rd.render(scene,cam)})();
 })();
 </script>
 </body>
